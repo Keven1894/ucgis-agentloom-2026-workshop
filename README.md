@@ -4,14 +4,14 @@
 
 Build a public-data geospatial catalog — search, filter, map, FAIR metadata — using **AgentLoom** on VSCode + **Cline**, with executable behavior validators. You fork this repo, propose knowledge into the KG, implement a catalog for one heterogeneous data source, and open a PR.
 
-> This is the **attendee-facing workshop edition**. Framework development and paper evidence live in the sibling dev repo [`ucgis-agentloom-2026`](https://github.com/Keven1894/ucgis-agentloom-2026).
+> This is the **attendee-facing workshop edition**. Framework development and paper evidence live in the private FIU dev repo `ucgis-agentloom-2026` (Gitea + Bitbucket dual-origin — not a public GitHub fork target).
 
 ## Relationship to AgentLoom
 
 | Repo | Role |
 | --- | --- |
 | [**Keven1894/AgentLoom**](https://github.com/Keven1894/AgentLoom) | Long-lived **framework** home (dual-helix KG + validators). SoftwareX paper cites this repo @ v3.0+. |
-| `Keven1894/ucgis-agentloom-2026` | **Dev / evidence** repo for the UCGIS sprint (D1–D4 case studies, eval transcripts). Private or staging; not the workshop fork target. |
+| `ucgis-agentloom-2026` | **Dev / evidence** (FIU private, Gitea + Bitbucket). D1–D4 case studies and eval transcripts — organizers only. |
 | **This repo** | **Workshop starter** — framework-only snapshot for attendees to fork-and-PR on June 15. |
 
 This repo is **not** a GitHub fork of AgentLoom. It is a clean, derived edition built from the UCGIS sprint framework floor. Framework improvements flow **workshop → dev repo → AgentLoom** (v3/v4 sync), not the other way around.

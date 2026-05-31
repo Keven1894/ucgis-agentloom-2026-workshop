@@ -1,2 +1,3 @@
 source_repo=ucgis-agentloom-2026
-source_ref=WORKTREE
+source_ref=main@7330e3f
+tag=workshop-day-rc1
