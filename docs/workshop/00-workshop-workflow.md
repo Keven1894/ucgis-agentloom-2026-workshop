@@ -1,7 +1,7 @@
 # 00 — Workshop workflow (operator + attendee)
 
 **Last updated**: 2026-05-31  
-**Status**: draft for W4 (`01-setup.md` / `02-quickstart.md` will fork from this)  
+**Status**: W4 attendee docs shipped (`01` / `02` / `03`); operators use full checklist below  
 **Audience**: operators now; attendees after W3 starter repo ships
 
 ## One-line goal
@@ -153,15 +153,13 @@ Per iteration:
 
 ---
 
-## W4 fork map
+## W4 docs (attendees start here)
 
-This doc splits into:
-
-| Future doc | Content from |
-|---|---|
-| `01-setup.md` | Phases A–D |
-| `02-quickstart.md` | Phase E + one mini propose-review cycle |
-| `03-data-source-menu.md` | Phase F source picker (existing plan) |
+| Doc | Content |
+| --- | --- |
+| [`01-setup.md`](./01-setup.md) | Phases A–D + governance floor |
+| [`02-quickstart.md`](./02-quickstart.md) | Phase E + mini propose-review on `data/workshop/quickstart-places.geojson` |
+| [`03-data-source-menu.md`](./03-data-source-menu.md) | D1–D4 picker for Block 3 |
 
 ## Cross-links
 

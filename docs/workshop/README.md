@@ -1,30 +1,29 @@
 # Workshop documentation (UCGIS 2026)
 
 **Workshop date**: 2026-06-15 (half-day)  
-**Execution repo**: `ucgis-agentloom-2026`  
-**Planning dossier**: `envistor-data/docs/research/workshop-ucgis-2026/`
+**Attendee repo**: [ucgis-agentloom-2026-workshop](https://github.com/Keven1894/ucgis-agentloom-2026-workshop)
 
-## Read order
+## Read order (attendees)
 
-| Doc | Audience | Status |
-|---|---|---|
-| [`00-workshop-workflow.md`](./00-workshop-workflow.md) | **Start here** — full A→G checklist (W4 seed) | draft 2026-05-31 |
-| [`kg-access-and-human-review.md`](./kg-access-and-human-review.md) | Architecture — two surfaces, who builds what | locked |
-| [`cline-wrapper.md`](./cline-wrapper.md) | Cline + `.clinerules` setup (W1) | complete |
-| [`cline-mcp-tools.md`](./cline-mcp-tools.md) | `.venv` + MCP config + tools (W2) | complete |
-| [`welcome.html`](./welcome.html) | Browser onboarding cheat sheet | complete |
-| [`cline-mcp-settings.example.json`](./cline-mcp-settings.example.json) | MCP template (`REPO_ROOT` + `.venv`) | complete |
+| # | Doc | Purpose |
+| --- | --- | --- |
+| 1 | [`01-setup.md`](./01-setup.md) | `.venv`, Cline, MCP, dashboard, validators |
+| 2 | [`02-quickstart.md`](./02-quickstart.md) | 5-min propose-review cycle (toy sample) |
+| 3 | [`03-data-source-menu.md`](./03-data-source-menu.md) | Pick D1–D4 for your catalog |
+| — | [`00-workshop-workflow.md`](./00-workshop-workflow.md) | Full A→G checklist (operators) |
+| — | [`welcome.html`](./welcome.html) | Browser cheat sheet |
 
-## The two-surface model (TL;DR)
+## Reference
 
-- **Agents** (Cline) read the KG via **MCP** and write proposals via **`propose_node.py`**.
-- **Humans** review proposals via the **dashboard** (`make dashboard` → `:8000` Proposals tab) and accept via **`accept_proposal.py`**.
-- W1 verified the agent propose path. W2 adds MCP + welcome page. The dashboard already exists.
+| Doc | Purpose |
+| --- | --- |
+| [`kg-access-and-human-review.md`](./kg-access-and-human-review.md) | Two surfaces, who builds what |
+| [`cline-wrapper.md`](./cline-wrapper.md) | Cline + `.clinerules` |
+| [`cline-mcp-tools.md`](./cline-mcp-tools.md) | MCP config |
+| [`cline-mcp-settings.example.json`](./cline-mcp-settings.example.json) | MCP template |
 
-**Who builds what:** framework infrastructure (MCP, dashboard, validators) → **operator + Cursor**. Cline smoke tests → **Cline**. Workshop domain work → **attendee + Cline**. Details: [`kg-access-and-human-review.md`](./kg-access-and-human-review.md) § Who builds what.
+## TL;DR
 
-## Related plans
-
-- W1 closed: `docs/plan/complete/2026-05-31-w1-cline-wrapper-complete.md`
-- W2 todo: `docs/plan/todo/2026-05-31-w2-mcp-and-human-review.md`
-- Workshop track: `docs/plan/todo/2026-05-23-workshop-track.md`
+- **Cline** reads KG via MCP, proposes via `propose_node.py`
+- **You** review on dashboard `:8000`, accept via `accept_proposal.py`
+- **Validators** must PASS on every commit / PR
