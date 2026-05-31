@@ -16,12 +16,70 @@
       },
       "relationships": {
         "parent": null,
+        "children": [
+          "knowledge:domain:nwis-sentinel-minus-999999-means-no-data",
+          "knowledge:domain:nwis-parameter-codes-are-opaque-5-digit-strings",
+          "knowledge:domain:nwis-site-ids-are-strings-in-nested-timeseries"
+        ]
+      }
+    },
+    {
+      "id": "knowledge:domain:nwis-sentinel-minus-999999-means-no-data",
+      "type": "concept",
+      "data": {
+        "title": "NWIS -999999 means no data",
+        "description": "Streamflow IV JSON uses -999999 as missing-data sentinel; must filter before stats/map coloring.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/nwis-sentinel-minus-999999-means-no-data.md",
+        "tags": [
+          "domain",
+          "proposed"
+        ]
+      },
+      "relationships": {
+        "parent": "knowledge:domain:root",
+        "children": []
+      }
+    },
+    {
+      "id": "knowledge:domain:nwis-parameter-codes-are-opaque-5-digit-strings",
+      "type": "concept",
+      "data": {
+        "title": "NWIS parameter codes are opaque 5-digit strings",
+        "description": "00060 discharge cfs etc.; catalog must label parameterCode not assume meaning from digits alone.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/nwis-parameter-codes-are-opaque-5-digit-strings.md",
+        "tags": [
+          "domain",
+          "proposed"
+        ]
+      },
+      "relationships": {
+        "parent": "knowledge:domain:root",
+        "children": []
+      }
+    },
+    {
+      "id": "knowledge:domain:nwis-site-ids-are-strings-in-nested-timeseries",
+      "type": "concept",
+      "data": {
+        "title": "NWIS site IDs are strings in nested timeSeries",
+        "description": "Do not parse site codes as integers; walk timeSeries[].sourceInfo.siteCode[] structure.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/nwis-site-ids-are-strings-in-nested-timeseries.md",
+        "tags": [
+          "domain",
+          "proposed"
+        ]
+      },
+      "relationships": {
+        "parent": "knowledge:domain:root",
         "children": []
       }
     }
   ],
   "metadata": {
-    "last_updated": "2026-05-19",
-    "total_nodes": 1
+    "last_updated": "2026-05-31",
+    "total_nodes": 4
   }
 }

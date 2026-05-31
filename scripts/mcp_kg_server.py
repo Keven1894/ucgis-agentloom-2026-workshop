@@ -29,6 +29,7 @@ from scripts.kg.kg_index import get_index  # noqa: E402
 
 mcp = FastMCP(
     "agentloom-kg",
+    log_level="ERROR",
     instructions=(
         "Read-only AgentLoom knowledge graph tools. "
         "Use kg_search before proposing nodes. "

@@ -16,17 +16,39 @@ sys.path.insert(0, str(REPO))
 from scripts.kg.kg_index import get_index  # noqa: E402
 
 
+def _domain_kg_is_root_only(idx) -> bool:
+    """True when domain knowledge graph has only the root node (cold-start workshop fork)."""
+    from scripts.kg.kg_index import KG_FILES
+
+    path, key = KG_FILES["domain-knowledge"]
+    data = json.loads(path.read_text(encoding="utf-8"))
+    nodes = data.get(key) or data.get("nodes") or []
+    if len(nodes) != 1:
+        return False
+    return nodes[0].get("id") == "knowledge:domain:root"
+
+
 def main() -> int:
     idx = get_index()
     errors: list[str] = []
+    cold_start = _domain_kg_is_root_only(idx)
 
-    print("=== kg_search: iso 3166 ===")
+    print("=== kg_search: iso 3166 (domain) ===")
     hits = idx.search("iso 3166", limit=5, role="domain")
     print(json.dumps(hits, indent=2))
     if not hits:
-        errors.append("kg_search('iso 3166') returned 0 hits")
-    elif not any("iso3166" in (h.get("title") or "").lower() or "3166" in (h.get("description_preview") or "") for h in hits):
-        # accept pending proposal hits from Wave C
+        if cold_start:
+            print(
+                "[OK] Domain KG is root-only (cold-start fork) — "
+                "no iso 3166 nodes until you propose (e.g. D4 or quickstart)."
+            )
+        else:
+            errors.append("kg_search('iso 3166') returned 0 hits")
+    elif not any(
+        "iso3166" in (h.get("title") or "").lower()
+        or "3166" in (h.get("description_preview") or "")
+        for h in hits
+    ):
         if not any(h.get("status") == "pending_proposal" for h in hits):
             errors.append("kg_search('iso 3166') had no domain-relevant hits")
 
