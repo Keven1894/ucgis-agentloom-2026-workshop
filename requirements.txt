@@ -1,0 +1,13 @@
+# Workshop runtime + tooling deps. Pinned to compatible-release ranges so a
+# fresh `pip install -r requirements.txt` keeps working when the workshop runs.
+
+# KG validation + safe atomic editing (ported from envistor-data/Scripts/json-helper)
+jsonschema>=4.20.0,<5
+jsonpatch>=1.33,<2
+
+# Dashboard (Phase 1 Day 3 — read-only KG viewer + proposals + timeline)
+fastapi>=0.110,<1
+uvicorn[standard]>=0.27,<1
+
+# MCP KG server (W2 — read-only tools for Cline)
+mcp>=1.0,<2

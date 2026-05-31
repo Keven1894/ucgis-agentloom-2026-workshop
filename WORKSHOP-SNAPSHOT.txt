@@ -1,0 +1,2 @@
+source_repo=ucgis-agentloom-2026
+source_ref=WORKTREE

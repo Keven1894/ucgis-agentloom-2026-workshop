@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AgentLoom Workshop — Start Here</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --card: #1a2332;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --green: #3fb950;
+      --border: #30363d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      margin: 0;
+      padding: 2rem 1rem 3rem;
+    }
+    main { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
+    .subtitle { color: var(--muted); margin-bottom: 2rem; }
+    h2 { font-size: 1.1rem; margin-top: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.35rem; }
+    .grid { display: grid; gap: 1rem; margin: 1rem 0; }
+    @media (min-width: 560px) { .grid { grid-template-columns: 1fr 1fr; } }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    .card h3 { margin: 0 0 0.5rem; font-size: 1rem; }
+    .card p { margin: 0 0 1rem; color: var(--muted); font-size: 0.92rem; }
+    a.btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #0d1117;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.45rem 0.9rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    a.btn.secondary { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+    code, pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: #010409;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      overflow-x: auto;
+    }
+    ol { padding-left: 1.25rem; }
+    li { margin: 0.35rem 0; }
+    .ok { color: var(--green); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>AgentLoom Workshop</h1>
+    <p class="subtitle">Two surfaces, one protocol — Cline proposes, you review on the dashboard.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>① Cline (left panel)</h3>
+        <p>Agent reads the KG via MCP tools and files proposals with <code>propose_node.py</code>.</p>
+        <p class="ok">MCP tools: kg_search · kg_get_node · kg_list_proposals</p>
+      </div>
+      <div class="card">
+        <h3>② Dashboard (browser)</h3>
+        <p>Humans review proposals in plain language — no raw JSON spelunking.</p>
+        <a class="btn" href="http://127.0.0.1:8000" target="_blank" rel="noopener">Open dashboard</a>
+        <a class="btn secondary" href="http://127.0.0.1:8000/#proposals" target="_blank" rel="noopener" style="margin-left:0.5rem">Proposals tab</a>
+      </div>
+    </div>
+
+    <h2>Before you start</h2>
+    <pre># Phase A — bootstrap (human, once per clone)
+python -m venv .venv
+.venv/Scripts/pip install -r requirements.txt          # Windows
+.venv/Scripts/python scripts/test_mcp_kg_tools.py    # expect PASS
+
+# Phase D — dashboard (terminal 1)
+.venv/Scripts/python -m uvicorn server.dashboard.app:app --port 8000 --host 127.0.0.1
+
+# Phase C — MCP: paste cline-mcp-settings.example.json (uses .venv python)</pre>
+
+    <h2>Propose → review loop</h2>
+    <ol>
+      <li>Ask Cline to inspect your snapshot and propose KG nodes (use <code>kg_search</code> first).</li>
+      <li>Cline runs <code>python scripts/kg/propose_node.py …</code> — approve when prompted.</li>
+      <li>Open dashboard → <strong>Proposals</strong> tab — read title + justification.</li>
+      <li>If satisfied: <code>python scripts/kg/accept_proposal.py --proposal …</code></li>
+      <li>Refresh dashboard — node appears on Graph + Timeline tabs.</li>
+    </ol>
+
+    <h2>Rules</h2>
+    <ul>
+      <li>Cline must <strong>never</strong> call <code>accept_proposal.py</code> — you accept.</li>
+      <li>MCP is read-only; mutations go through the CLIs only.</li>
+      <li>If MCP fails: Cline can fall back to selective file read (see <code>.clinerules/02</code>).</li>
+    </ul>
+
+    <p style="color:var(--muted);font-size:0.85rem;margin-top:2rem">
+      Docs: <code>docs/workshop/cline-wrapper.md</code> · <code>docs/workshop/cline-mcp-tools.md</code>
+    </p>
+  </main>
+</body>
+</html>

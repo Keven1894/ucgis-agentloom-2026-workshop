@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "agentloom-kg": {
+      "command": "REPO_ROOT/.venv/Scripts/python.exe",
+      "args": [
+        "REPO_ROOT/scripts/mcp_kg_server.py"
+      ],
+      "disabled": false,
+      "autoApprove": ["kg_search", "kg_get_node", "kg_list_proposals"]
+    }
+  }
+}
