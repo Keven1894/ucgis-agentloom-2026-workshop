@@ -47,9 +47,10 @@ make dashboard       # open http://127.0.0.1:8000
 
 Then follow the workshop docs:
 
-1. [`docs/workshop/welcome.html`](docs/workshop/welcome.html) — open in browser
-2. [`docs/workshop/00-workshop-workflow.md`](docs/workshop/00-workshop-workflow.md) — full A→G checklist
-3. [`docs/workshop/cline-mcp-tools.md`](docs/workshop/cline-mcp-tools.md) — wire MCP into Cline
+1. [`docs/workshop/01-setup.md`](docs/workshop/01-setup.md) — **start here** (venv, Cline, MCP, dashboard)
+2. [`docs/workshop/02-quickstart.md`](docs/workshop/02-quickstart.md) — 5-minute propose-review practice
+3. [`docs/workshop/03-data-source-menu.md`](docs/workshop/03-data-source-menu.md) — pick D1–D4 for your catalog
+4. [`docs/workshop/welcome.html`](docs/workshop/welcome.html) — browser cheat sheet
 
 ## Toolchain
 

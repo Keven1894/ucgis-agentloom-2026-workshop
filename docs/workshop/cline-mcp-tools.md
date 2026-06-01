@@ -38,7 +38,8 @@ Cline **cannot** reliably configure its own MCP settings. You paste JSON once.
 2. Cline panel → **MCP Servers** → **Configure** → **Configure MCP Servers**
 3. Replace `REPO_ROOT` in the template below with your **absolute** repo path
 4. Save → **Done** → `Developer: Reload Window`
-5. Confirm **agentloom-kg** lists 3 tools
+5. Confirm **agentloom-kg** shows **connected** (green). Tool names may not appear in the panel — see [Troubleshooting](#troubleshooting).
+6. Run the [functional test](#cline-acceptance-test-operator) in a Cline task.
 
 ### Windows template
 
@@ -137,8 +138,9 @@ Disable `agentloom-kg` in MCP settings. Cline falls back to selective file read 
 
 | Symptom | Fix |
 |---|---|
+| Connected (green) but **no tools in MCP list** | **Often OK** — Cline + FastMCP hide tools in UI while chat still works ([cline#1272](https://github.com/cline/cline/issues/1272)). Run acceptance test below. `mcp_kg_server.py` sets `log_level="ERROR"` to help. |
 | Connection closed (Windows) | Absolute paths; `.venv/Scripts/python.exe` as `command` |
-| No tools listed | Run `.venv/Scripts/pip show mcp`; check Developer Tools console |
+| No tools listed **and** Cline cannot call them in chat | Run `.venv/Scripts/pip show mcp`; check Developer Tools console |
 | Server crashes | `.venv/Scripts/python scripts/mcp_kg_server.py` — errors on stderr |
 | Wrong packages | Recreate venv; never point MCP at system Python after workshop prep |
 | Cline shell uses wrong Python | Set VS Code interpreter to `.venv`; copy `settings.json.example` |
@@ -150,8 +152,8 @@ Disable `agentloom-kg` in MCP settings. Cline falls back to selective file read 
 After MCP connects:
 
 ```
-Use MCP kg_search for "iso 3166" with role=domain.
-Use kg_list_proposals.
+Use MCP kg_search for "catalog storytelling" with role=builder.
+Use MCP kg_list_proposals.
 Do NOT read agents/knowledge-graphs/*-graph.json directly.
 Report what you found and stop.
 ```

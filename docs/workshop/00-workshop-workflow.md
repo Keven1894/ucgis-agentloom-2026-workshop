@@ -64,9 +64,11 @@ Details: [`cline-wrapper.md`](./cline-wrapper.md) · [`09-cline-setup.md`](../..
 
 1. Cline panel → **MCP Servers** → Configure → **Configure MCP Servers**
 2. Paste config from [`cline-mcp-settings.example.json`](./cline-mcp-settings.example.json)
-3. Replace `REPO_ROOT` with your **absolute** repo path (e.g. `C:/projects/ucgis-agentloom-2026`)
+3. Replace `REPO_ROOT` with your **absolute fork path** (must match the clone you have open)
 4. Save → Done → **Developer: Reload Window**
-5. Confirm **agentloom-kg** shows 3 tools: `kg_search`, `kg_get_node`, `kg_list_proposals`
+5. Confirm **agentloom-kg** connected (green). Tool names may not appear ([cline#1272](https://github.com/cline/cline/issues/1272)) — use Phase E functional test.
+
+**Cline MCP config is global** (one JSON for all VS Code projects) — switch paths when you change clones. See [`01-setup.md`](./01-setup.md) Step 5b.
 
 **MCP `command` must be `.venv/Scripts/python.exe`** (Windows) or `.venv/bin/python` — not system Python.
 
@@ -79,8 +81,8 @@ Details: [`cline-mcp-tools.md`](./cline-mcp-tools.md)
 Terminal 1 (keep running during workshop):
 
 ```bash
-# Windows
-.venv/Scripts/python -m uvicorn server.dashboard.app:app --reload --port 8000 --host 127.0.0.1
+# Windows — dedicated terminal tab; omit --reload on Windows if the process exits immediately
+.venv/Scripts/python -m uvicorn server.dashboard.app:app --port 8000 --host 127.0.0.1
 # or: make dashboard   (if make available)
 ```
 
@@ -95,11 +97,13 @@ Open [`welcome.html`](./welcome.html) in browser as onboarding cheat sheet.
 New Cline task (left panel):
 
 ```
-Use MCP kg_search for "iso 3166" with role=domain.
-Use kg_list_proposals.
+Use MCP kg_search for "catalog storytelling" with role=builder.
+Use MCP kg_list_proposals.
 Do NOT read agents/knowledge-graphs/*-graph.json directly.
-Report what you found and stop.
+Report hit counts and stop.
 ```
+
+Pass: MCP tools invoked; builder search ≥1 hit; proposals count reported (0 on cold fork OK).
 
 Pass: MCP tools invoked; domain ISO3166 hit (may be `pending_proposal`); proposal count reported.
 
@@ -146,8 +150,9 @@ Per iteration:
 | A3 | VS Code interpreter = `.venv` | ☐ |
 | B1 | Cline installed + API configured | ☐ |
 | B2 | `.clinerules` sanity check | ☐ |
-| C1 | MCP `agentloom-kg` connected (3 tools) | ☐ |
-| C2 | MCP uses `.venv` python path | ☐ |
+| C1 | MCP `agentloom-kg` connected (green) | ☐ |
+| C2 | MCP functional test — Cline calls `kg_search` in chat | ☐ |
+| C3 | MCP uses `.venv` python path | ☐ |
 | D1 | Dashboard `:8000` Proposals tab loads | ☐ |
 | E1 | Cline MCP smoke test passed | ☐ |
 
