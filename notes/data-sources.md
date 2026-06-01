@@ -13,7 +13,7 @@ Phase 0 deliverable. This file is the **seed for the domain knowledge nodes** bu
 | --- | --- | --- | --- | --- | --- |
 | D1 | USGS Earthquakes (all_week) | Point + event | None | live (1 min) | `d1-usgs-earthquakes-week.geojson` |
 | D2 | OpenAQ v3 locations | Point + time-series | **API key required** | live (15 min) | `d2-openaq-locations-page1.json` |
-| D3 | USGS NWIS streamflow | Point + time-series | None | live (instantaneous) | `d3-usgs-nwis-suwannee-24h.json` |
+| D3 | USGS NWIS streamflow | Point + time-series | None | live (instantaneous) | `d3-usgs-nwis-suwannee-24h.json` (discovery); `d3-usgs-nwis-fl-stations-24h.json` (scale enrich) |
 | D4 | Natural Earth admin-0 | Polygon | None | static (yearly NE release) | `d4-natural-earth-admin0.geojson` |
 
 ## D1 — USGS Earthquakes

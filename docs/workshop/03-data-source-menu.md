@@ -67,8 +67,9 @@ Pick **one** source (or BYO with organizer approval). Build `starter/<your-choic
 | | |
 | --- | --- |
 | Live pattern | `https://waterservices.usgs.gov/nwis/iv/?format=json&sites=...` |
-| Vendored | `data/snapshots/d3-usgs-nwis-suwannee-24h.json` |
-| Alt snapshot | `data/snapshots/d3-usgs-nwis-fl-stations-24h.json` (if present) |
+| Discovery snapshot | `data/snapshots/d3-usgs-nwis-suwannee-24h.json` (1 site — read in Phase 2) |
+| Wire (Phase 5) | same Suwannee file → expect **1** map marker |
+| Scale enrich (Phase 5b) | `data/snapshots/d3-usgs-nwis-fl-stations-24h.json` → **6** FL gages, same parser, **no new KG** |
 
 **Foot-guns:**
 

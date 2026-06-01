@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>D3 Streamflow Catalog (Scaffold)</title>
+    <title>D3 Streamflow Catalog — Florida river gages</title>
 
     <!-- Leaflet 1.9.4 (unpkg) -->
     <link
@@ -114,6 +114,35 @@
         border-radius: 999px;
         color: var(--muted);
       }
+
+      .at-a-glance {
+        border-color: rgba(124, 196, 255, 0.35);
+        background: rgba(124, 196, 255, 0.08);
+      }
+
+      .at-a-glance dl {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 6px 12px;
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .at-a-glance dt {
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .at-a-glance dd {
+        margin: 0;
+      }
+
+      .lay-lead {
+        font-size: 14px;
+        line-height: 1.5;
+        margin: 0 0 8px;
+      }
     </style>
 
     <!-- Schema.org Dataset JSON-LD (required) -->
@@ -121,8 +150,8 @@
       {
         "@context": "https://schema.org",
         "@type": "Dataset",
-        "name": "USGS NWIS Streamflow (D3) — Suwannee River at Branford, FL",
-        "description": "Scaffold catalog UI for USGS NWIS Instantaneous Values (IV) streamflow time series (parameter 00060). No live fetch yet; map is placeholder centered in Florida.",
+        "name": "USGS NWIS Streamflow (D3) — Florida stations (6 sites)",
+        "description": "Workshop catalog UI for USGS NWIS Instantaneous Values (IV) streamflow (parameter 00060) across six Florida river gages. Vendored snapshot; same parser scales from one site to many.",
         "url": "http://127.0.0.1:8000/",
         "license": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
         "creator": {
@@ -133,72 +162,103 @@
           {
             "@type": "DataDownload",
             "name": "Vendored snapshot (workshop)",
-            "contentUrl": "data/snapshots/d3-usgs-nwis-suwannee-24h.json",
+            "contentUrl": "data/snapshots/d3-usgs-nwis-fl-stations-24h.json",
             "encodingFormat": "application/json"
           },
           {
             "@type": "DataDownload",
             "name": "NWIS IV JSON endpoint",
-            "contentUrl": "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=02320500&parameterCd=00060&period=PT24H",
+            "contentUrl": "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=02320500,02323500,02358000,02292900,02236000,02246000&parameterCd=00060&period=PT24H",
             "encodingFormat": "application/json"
           }
         ],
-        "dateModified": "2026-05-31"
+        "dateModified": "2026-06-02"
       }
     </script>
   </head>
   <body>
     <header class="topbar">
-      <h1>D3 Streamflow Catalog (NWIS snapshot)</h1>
+      <h1>D3 Streamflow Catalog (FL stations)</h1>
       <span id="siteCount" class="badge">Loading…</span>
     </header>
 
     <div class="layout">
       <aside class="sidebar">
+        <section class="at-a-glance" id="at-a-glance" aria-label="At a glance summary">
+          <h2>At a glance</h2>
+          <dl>
+            <dt>Where from?</dt>
+            <dd id="agl-source">Loading…</dd>
+            <dt>What is it?</dt>
+            <dd id="agl-what">Loading…</dd>
+            <dt>How to use?</dt>
+            <dd id="agl-reuse">Loading…</dd>
+            <dt>On screen now</dt>
+            <dd id="agl-now">Loading…</dd>
+          </dl>
+        </section>
+
         <section data-catalog-role="title">
           <h2>Title</h2>
+          <p class="lay-lead">
+            <strong>Florida river discharge (streamflow)</strong> — six USGS gaging
+            stations, last 24 hours of 15-minute readings, shown on an interactive map.
+          </p>
           <p>
-            A minimal catalog that loads a vendored USGS NWIS streamflow snapshot
-            (parameter code 00060) and renders the station as a map marker.
+            Each blue marker is one USGS stream gage. Click a marker or use the station
+            list below the map to see the latest discharge and a short sparkline.
           </p>
         </section>
 
         <section data-catalog-role="provenance">
           <h2>Provenance</h2>
           <p>
-            Source: USGS NWIS Instantaneous Values (IV) JSON feed; see snapshot and
-            endpoint links in the JSON-LD block above for the exact URLs.
+            Data come from the
+            <a href="https://www.usgs.gov/" rel="noopener">U.S. Geological Survey (USGS)</a>
+            National Water Information System (NWIS), Instantaneous Values (IV) web service.
+            This workshop page uses a vendored JSON snapshot (May 2026) so the demo works
+            offline; the live feed URL is in the JSON-LD block.
+          </p>
+          <p>
+            USGS data are provisional and subject to revision. License and credits:
+            <a href="https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits" rel="noopener">USGS copyright policy</a>.
           </p>
         </section>
 
         <section data-catalog-role="acquisition">
           <h2>Acquisition</h2>
           <p>
-            This page fetches the vendored workshop snapshot via a relative URL:
-            <code>../../data/snapshots/d3-usgs-nwis-suwannee-24h.json</code>. If
-            you open this page via <code>file://</code>, browser fetch may be
-            blocked; run a local static server (e.g.
-            <code>python -m http.server</code>) instead.
+            Snapshot file:
+            <code>d3-usgs-nwis-fl-stations-24h.json</code> (six site IDs, parameter
+            <code>00060</code>, period <code>PT24H</code>). Fetched once and stored under
+            <code>data/snapshots/</code> for reproducible workshop builds.
+          </p>
+          <p>
+            Serve this page with a local static server (<code>python -m http.server</code>)
+            — browser security blocks <code>fetch()</code> on <code>file://</code> URLs.
           </p>
         </section>
 
         <section data-catalog-role="data-shape">
           <h2>Data shape</h2>
           <p>
-            NWIS IV JSON is nested: <code>value.timeSeries[]</code> contains one
-            series per site/parameter, with site metadata under
-            <code>sourceInfo</code>, variable metadata under <code>variable</code>,
-            and observations under <code>values[].value[]</code>.
+            Six river stations across Florida. Each record is discharge in cubic feet per
+            second (cfs), USGS parameter code <strong>00060</strong>, with latitude/longitude
+            for mapping. Observations are 15-minute instantaneous values over roughly the
+            past 24 hours.
+          </p>
+          <p class="muted" style="margin-top:8px;font-size:12px">
+            Technical: nested NWIS JSON — <code>value.timeSeries[]</code> per site, values
+            under <code>values[].value[]</code>.
           </p>
         </section>
 
         <section data-catalog-role="processing">
           <h2>Processing</h2>
           <p>
-            JS steps: fetch snapshot → extract <code>timeSeries</code> → read
-            site id + lat/lon → read parameter code + unit → filter
-            <code>-999999</code> no-data sentinel → compute latest value and a
-            short history sparkline → render Leaflet marker + sidebar list.
+            This page filters USGS missing-data sentinels (<code>-999999</code>), picks the
+            latest valid reading per station, draws sparklines from the last 48 valid points,
+            and plots markers on an OpenStreetMap basemap. No unit conversion applied.
           </p>
         </section>
 
@@ -206,15 +266,19 @@
           <h2>KG link</h2>
           <ul>
             <li>
-              <a href="#" rel="noopener">NWIS -999999 means no data</a>
+              Story map four viewer questions
+              <span class="badge">knowledge:domain:story-map-must-answer-four-viewer-questions</span>
+            </li>
+            <li>
+              NWIS -999999 means no data
               <span class="badge">knowledge:domain:nwis-sentinel-minus-999999-means-no-data</span>
             </li>
             <li>
-              <a href="#" rel="noopener">NWIS parameter codes are opaque 5-digit strings</a>
+              NWIS parameter codes are opaque 5-digit strings
               <span class="badge">knowledge:domain:nwis-parameter-codes-are-opaque-5-digit-strings</span>
             </li>
             <li>
-              <a href="#" rel="noopener">NWIS site IDs are strings in nested timeSeries</a>
+              NWIS site IDs are strings in nested timeSeries
               <span class="badge">knowledge:domain:nwis-site-ids-are-strings-in-nested-timeseries</span>
             </li>
           </ul>
@@ -223,8 +287,10 @@
         <section data-catalog-role="reuse">
           <h2>Reuse</h2>
           <p>
-            Reuse note: this is workshop scaffolding. Cite USGS NWIS and confirm
-            licensing/credits before publishing derived products or screenshots.
+            Cite USGS as the data source. Example: "Discharge data from USGS NWIS (parameter
+            00060), retrieved via waterservices.usgs.gov." Confirm provisional-data policy
+            before publishing analysis or derivatives. Workshop scaffolding — not a production
+            data portal.
           </p>
         </section>
       </aside>
@@ -243,7 +309,7 @@
     ></script>
     <script>
       const NORMALIZED_URL = "../../dist/d3-normalized.iso.json";
-      const SNAPSHOT_URL = "../../data/snapshots/d3-usgs-nwis-suwannee-24h.json";
+      const SNAPSHOT_URL = "../../data/snapshots/d3-usgs-nwis-fl-stations-24h.json";
       const NO_DATA_SENTINEL = -999999;
 
       const siteCountEl = document.getElementById("siteCount");
@@ -410,7 +476,44 @@
         `;
       }
 
-      function renderSites(sites) {
+      function updateAtAGlance(sites, usedNormalized) {
+        const source = document.getElementById("agl-source");
+        const what = document.getElementById("agl-what");
+        const reuse = document.getElementById("agl-reuse");
+        const now = document.getElementById("agl-now");
+        if (!source) return;
+
+        source.textContent =
+          "U.S. Geological Survey NWIS (Instantaneous Values), vendored workshop snapshot.";
+
+        what.textContent =
+          "River discharge (streamflow) in cubic feet per second (cfs), parameter 00060, six Florida gages, ~24 h of 15-min readings.";
+
+        reuse.textContent =
+          "Cite USGS NWIS; confirm provisional-data policy before publishing. Snapshot path in JSON-LD distribution.";
+
+        if (!sites.length) {
+          now.textContent = "No stations loaded — check static server and snapshot path.";
+          return;
+        }
+
+        const dts = sites
+          .map((s) => s.latest?.dateTime)
+          .filter(Boolean)
+          .sort();
+        const earliest = dts[0] ?? "n/a";
+        const latest = dts[dts.length - 1] ?? "n/a";
+        const unit = sites[0]?.unitCode ?? "ft3/s";
+        const names = sites
+          .slice(0, 3)
+          .map((s) => s.siteName?.split(",")[0] ?? s.siteId)
+          .join("; ");
+        const more = sites.length > 3 ? ` (+${sites.length - 3} more)` : "";
+
+        now.textContent = `${sites.length} markers on map (${unit}). Latest window in snapshot: ${earliest} → ${latest}. Examples: ${names}${more}.${usedNormalized ? " Timestamps from normalized dist/ output." : ""}`;
+      }
+
+      function renderSites(sites, usedNormalized = false) {
         markerLayer.clearLayers();
 
         const sidebar = document.querySelector(".sidebar");
@@ -476,6 +579,7 @@
         }
 
         siteCountEl.textContent = `${sites.length} site(s) plotted`;
+        updateAtAGlance(sites, usedNormalized);
       }
 
       async function main() {
@@ -483,16 +587,18 @@
           // Prefer normalized dist output (UTC-Z timestamps) when present.
           let res = await fetch(NORMALIZED_URL, { cache: "no-store" });
           let sites = [];
+          let usedNormalized = false;
           if (res.ok) {
             const payload = await res.json();
             sites = parseNormalizedIso(payload);
+            usedNormalized = true;
           } else {
             res = await fetch(SNAPSHOT_URL, { cache: "no-store" });
             if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${SNAPSHOT_URL}`);
             const payload = await res.json();
             sites = parseNwisSnapshot(payload);
           }
-          renderSites(sites);
+          renderSites(sites, usedNormalized);
         } catch (err) {
           console.error(err);
           siteCountEl.textContent = "Load failed";

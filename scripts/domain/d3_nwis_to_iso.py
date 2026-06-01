@@ -1,7 +1,7 @@
 """d3_nwis_to_iso — normalize NWIS IV timestamps to strict UTC ISO-8601 (Z).
 
-Reads the vendored D3 snapshot:
-  data/snapshots/d3-usgs-nwis-suwannee-24h.json
+Reads the vendored D3 multi-station snapshot:
+  data/snapshots/d3-usgs-nwis-fl-stations-24h.json
 
 Writes a normalized output to:
   dist/d3-normalized.iso.json
@@ -25,7 +25,7 @@ from typing import Any
 
 
 WORKSPACE = Path(__file__).resolve().parents[2]
-INPUT_PATH = WORKSPACE / "data/snapshots/d3-usgs-nwis-suwannee-24h.json"
+INPUT_PATH = WORKSPACE / "data/snapshots/d3-usgs-nwis-fl-stations-24h.json"
 OUTPUT_PATH = WORKSPACE / "dist/d3-normalized.iso.json"
 
 

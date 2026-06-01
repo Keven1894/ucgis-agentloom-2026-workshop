@@ -19,7 +19,8 @@
         "children": [
           "knowledge:domain:nwis-sentinel-minus-999999-means-no-data",
           "knowledge:domain:nwis-parameter-codes-are-opaque-5-digit-strings",
-          "knowledge:domain:nwis-site-ids-are-strings-in-nested-timeseries"
+          "knowledge:domain:nwis-site-ids-are-strings-in-nested-timeseries",
+          "knowledge:domain:story-map-must-answer-four-viewer-questions"
         ]
       }
     },
@@ -76,10 +77,30 @@
         "parent": "knowledge:domain:root",
         "children": []
       }
+    },
+    {
+      "id": "knowledge:domain:story-map-must-answer-four-viewer-questions",
+      "type": "concept",
+      "data": {
+        "title": "Story map must answer four viewer questions at a glance",
+        "description": "After data loads, plain-language answers: where from, what it is, how to reuse, what is on screen now — not just JSON paths.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/story-map-must-answer-four-viewer-questions.md",
+        "tags": [
+          "domain",
+          "proposed",
+          "story-map",
+          "catalog-ui"
+        ]
+      },
+      "relationships": {
+        "parent": "knowledge:domain:root",
+        "children": []
+      }
     }
   ],
   "metadata": {
-    "last_updated": "2026-05-31",
-    "total_nodes": 4
+    "last_updated": "2026-06-02",
+    "total_nodes": 5
   }
 }
