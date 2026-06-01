@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UCGIS 2026 — AgentLoom × Cline Workshop</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --fg: #e7ecf1;
+      --muted: #8b9aab;
+      --accent: #3d9cf5;
+      --accent2: #5ec992;
+      --warn: #e8a838;
+      --card: #1a2332;
+      --border: #2a3544;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--fg);
+      font-family: "Segoe UI", system-ui, sans-serif; }
+    .deck { height: 100%; position: relative; }
+    .slide {
+      display: none; height: 100%; padding: 3rem 4rem 4rem;
+      flex-direction: column; justify-content: center;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .slide.active { display: flex; }
+    .slide h1 { font-size: 2.4rem; font-weight: 700; line-height: 1.2; margin-bottom: 1rem; }
+    .slide h2 { font-size: 1.5rem; font-weight: 600; color: var(--accent); margin-bottom: 1.25rem; }
+    .slide p, .slide li { font-size: 1.25rem; line-height: 1.55; color: var(--fg); }
+    .slide ul { margin: 0.75rem 0 0 1.5rem; }
+    .slide li { margin: 0.4rem 0; }
+    .muted { color: var(--muted); font-size: 1rem !important; }
+    .quote {
+      border-left: 4px solid var(--accent); padding: 1rem 1.25rem; margin: 1rem 0;
+      background: var(--card); border-radius: 0 8px 8px 0; font-size: 1.35rem;
+    }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 1.05rem; }
+    th, td { border: 1px solid var(--border); padding: 0.6rem 0.85rem; text-align: left; }
+    th { background: var(--card); color: var(--accent); }
+    pre {
+      background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem 1.25rem; margin-top: 1rem; overflow-x: auto; font-size: 0.95rem;
+      line-height: 1.45;
+    }
+    a { color: var(--accent); }
+    code { font-family: Consolas, "Courier New", monospace; color: var(--accent2); }
+    .flow {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 1.25rem;
+      font-size: 1rem;
+    }
+    .flow span {
+      background: var(--card); border: 1px solid var(--border); padding: 0.45rem 0.75rem;
+      border-radius: 6px;
+    }
+    .flow .arrow { color: var(--muted); background: none; border: none; padding: 0 0.2rem; }
+    .badge { display: inline-block; background: var(--accent); color: #fff; font-size: 0.75rem;
+      padding: 0.2rem 0.55rem; border-radius: 4px; margin-bottom: 0.75rem; font-weight: 600; }
+    .bad { color: #f07178; }
+    .good { color: var(--accent2); }
+    .nav-hint {
+      position: fixed; bottom: 1rem; right: 1.5rem; color: var(--muted); font-size: 0.85rem;
+    }
+    .progress {
+      position: fixed; bottom: 0; left: 0; height: 3px; background: var(--accent);
+      transition: width 0.2s;
+    }
+    .counter {
+      position: fixed; bottom: 1rem; left: 1.5rem; color: var(--muted); font-size: 0.85rem;
+    }
+    @media print {
+      .slide { display: flex !important; page-break-after: always; height: auto; min-height: 100vh; }
+      .nav-hint, .counter, .progress { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck" id="deck">
+
+    <section class="slide active" data-note="Title slide — introduce yourself and lab vs UCGIS date.">
+      <span class="badge">UCGIS 2026 Pre-Symposium · June 15</span>
+      <h1>AgentLoom × Cline</h1>
+      <h2>Building FAIR Geospatial Catalogs with Human-in-the-Loop KG</h2>
+      <p class="muted">Keven Guan · FIU GIS Center · Lab rehearsal 2026-06-02</p>
+    </section>
+
+    <section class="slide" data-note="Logistics — lab uses BYOK; UCGIS will use pooled keys.">
+      <h2>Logistics</h2>
+      <ul>
+        <li>Fork upstream, then clone <strong>your</strong> fork — not the organizer’s clone URL for day-to-day work</li>
+        <li>Upstream (fork this): <a href="https://github.com/Keven1894/ucgis-agentloom-2026-workshop">github.com/Keven1894/ucgis-agentloom-2026-workshop</a></li>
+        <li>GitHub account · VS Code + Cline · Python 3.11+</li>
+        <li><strong>Today (lab):</strong> BYOK in Cline · gpt-5.2 @ temp 0.2</li>
+        <li><strong>UCGIS:</strong> API key on A5 slip (day-of)</li>
+        <li>Help: raise hand · A5 cheat sheet on desk</li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2>What you leave with</h2>
+      <div class="quote">A <strong>validators-green</strong> catalog in <strong>your fork</strong>, domain KG nodes <strong>you</strong> proposed and accepted, and an <strong>open PR</strong>.</div>
+    </section>
+
+    <section class="slide" data-note="Do NOT frame as AgentLoom vs hand prompt duel.">
+      <h2>The promise — and where it breaks</h2>
+      <p>"Describe the app → get working code."</p>
+      <p style="margin-top:1rem">Cline + GPT-5.2 <strong>can</strong> ship a Leaflet catalog today.</p>
+      <p style="margin-top:1rem">The gap isn't one task — it's <strong>session 2</strong>, a <strong>teammate</strong>, a <strong>new source</strong>, an <strong>audit 3 months later</strong>.</p>
+    </section>
+
+    <section class="slide">
+      <h2>The real question</h2>
+      <div class="quote">Not "can the agent do it once?" (yes).<br><br>
+        "<strong>Where does the prompt come from</strong>, the 50th time, for the 10th person, with a <strong>traceable source</strong>?"</div>
+      <p class="muted" style="margin-top:1rem">A prompt is one-shot. When the session ends, the reasoning is gone.</p>
+    </section>
+
+    <section class="slide">
+      <h2>What a hand-written prompt cannot give</h2>
+      <table>
+        <tr><th>Property</th><th>Why "better prompt" can't fix it</th></tr>
+        <tr><td><strong>Persistence</strong></td><td>Prompt dies with the session</td></tr>
+        <tr><td><strong>Indexed retrieval</strong></td><td>Dump-all → token blow-up + contradictions</td></tr>
+        <tr><td><strong>Provenance</strong></td><td>No audit trail, no human accept-gate</td></tr>
+        <tr><td><strong>Compounding</strong></td><td>Mistakes don't become reusable nodes</td></tr>
+      </table>
+      <p class="muted" style="margin-top:0.75rem">+ portability across hosts · + team shared memory</p>
+    </section>
+
+    <section class="slide" data-note="Core thesis — cite IR/RAG as prior art, not our invention.">
+      <h2>What AgentLoom is</h2>
+      <div class="quote"><strong>Not a better prompt</strong> — infrastructure that <em>produces</em> prompts reliably, at scale, with provenance, across sessions/people/hosts, and gets better over time.</div>
+      <p style="margin-top:1rem">KG → MCP <code>kg_search</code> (top-k) → propose → review → accept → validators</p>
+    </section>
+
+    <section class="slide">
+      <h2>What we do <span class="bad">NOT</span> claim</h2>
+      <ul>
+        <li class="bad">❌ Beats an expert's hand-tuned prompt on a single point</li>
+        <li class="bad">❌ Agent never violates rules (runtime is probabilistic)</li>
+        <li class="bad">❌ Deterministic end-to-end</li>
+      </ul>
+      <p class="good" style="margin-top:1.25rem">✅ Durable properties on previous slide — verifiable on the dashboard today</p>
+    </section>
+
+    <section class="slide">
+      <h2>Today's protocol</h2>
+      <div class="flow">
+        <span>Discover data</span><span class="arrow">→</span>
+        <span>kg_search</span><span class="arrow">→</span>
+        <span>propose_node</span><span class="arrow">→</span>
+        <span>Dashboard review</span><span class="arrow">→</span>
+        <span>accept_proposal</span><span class="arrow">→</span>
+        <span>Build catalog</span><span class="arrow">→</span>
+        <span>validators PASS → PR</span>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Roles</h2>
+      <table>
+        <tr><th>Who</th><th>Does</th></tr>
+        <tr><td><strong>You</strong></td><td>Accept proposals · dashboard · commit</td></tr>
+        <tr><td><strong>Cline</strong></td><td>MCP read · propose · implement catalog</td></tr>
+        <tr><td><strong>Validators</strong></td><td>Objective pass/fail (not taste)</td></tr>
+      </table>
+    </section>
+
+    <section class="slide" data-note="Switch to dev d1 — attendees watch only.">
+      <h2>Finish line (lecturer demo)</h2>
+      <p>Your fork has the <strong>framework</strong> — <strong>no D1 catalog</strong>.</p>
+      <p style="margin-top:1rem">Watch: 8 storytelling sections · Schema.org JSON-LD · live map</p>
+      <p class="muted">Lecturer demo only — organizer dev repo branch <code>d1</code> (FIU Gitea, not in attendee fork):<br>
+        <a href="https://dpanther04devtemp.fiu.edu/gitea/fiugiscenter/ucgis-agentloom-2026">ucgis-agentloom-2026</a> · branch <code>d1</code></p>
+    </section>
+
+    <section class="slide" data-note="Live: Cline kg_search in chat.">
+      <h2>Evidence 1 — Persistence + indexing</h2>
+      <p>Live: MCP <code>kg_search</code> → <strong>only the relevant few</strong> nodes</p>
+      <div class="quote">This memory survived since May. It pulls what's relevant — not a 100-rule dump.</div>
+    </section>
+
+    <section class="slide" data-note="Dashboard timeline tab.">
+      <h2>Evidence 2 — Provenance</h2>
+      <p>Dashboard <strong>Timeline</strong>: propose → accept UPDATE_LOG chain</p>
+      <div class="quote">Every node has a source and a human who accepted it. A prompt has neither.</div>
+    </section>
+
+    <section class="slide" data-note="Delete catalog section → FAIL → restore PASS.">
+      <h2>Evidence 3 — Learning + validators</h2>
+      <ul>
+        <li>Meta-pattern nodes correct repeat mistakes (framework learns)</li>
+        <li>Live: remove one catalog section → <code>run_all.py</code> <span class="bad">FAIL</span> → restore → <span class="good">PASS</span></li>
+      </ul>
+    </section>
+
+    <section class="slide" data-note="Pause before hands-on.">
+      <h2>Frame line</h2>
+      <div class="quote">Today is not about who writes a better prompt. It's about a memory layer that <strong>others — and future you — can extend</strong>, with traceable sources.<br><br>You're first in your fork.</div>
+    </section>
+
+    <section class="slide">
+      <h2>Pick your source (Block 3)</h2>
+      <ul>
+        <li><strong>D2</strong> OpenAQ air quality (API key)</li>
+        <li><strong>D3</strong> USGS NWIS streamflow (recommended — no key)</li>
+        <li><strong>D4</strong> Natural Earth admin-0 boundaries</li>
+      </ul>
+      <p class="muted">Menu: <code>docs/workshop/03-data-source-menu.md</code> in your fork ·
+        <a href="https://github.com/Keven1894/ucgis-agentloom-2026-workshop/blob/main/docs/workshop/03-data-source-menu.md">online</a></p>
+    </section>
+
+    <section class="slide">
+      <h2>Locked stack</h2>
+      <p><code>.venv</code> · VS Code · Cline · MCP <code>agentloom-kg</code> · Dashboard <code>:8000</code></p>
+      <ul style="margin-top:1rem">
+        <li>MCP is <strong>read-only</strong> — never hand-edit <code>*-graph.json</code></li>
+        <li>MCP green but empty tool list? <strong>Normal</strong> — test in Cline chat</li>
+        <li>MCP config is <strong>global</strong> — paths must match your fork</li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2>Block 0 — verify</h2>
+      <pre><code>python -m venv .venv
+.venv\Scripts\pip install -r requirements.txt
+.venv\Scripts\python scripts\verify_workshop_machine.py
+.venv\Scripts\python scripts\test_mcp_kg_tools.py
+# Cline → OpenAI · gpt-5.2 · temp 0.2 · key in settings</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Block 2 — quickstart together</h2>
+      <p>Whole room: <code>docs/workshop/02-quickstart.md</code> ·
+        <a href="https://github.com/Keven1894/ucgis-agentloom-2026-workshop/blob/main/docs/workshop/02-quickstart.md">online</a></p>
+      <p style="margin-top:0.75rem">Cline discovers → proposes → <strong>you</strong> accept on dashboard</p>
+      <p class="muted">Muscle memory for Track B</p>
+    </section>
+
+    <section class="slide">
+      <h2>Block 3 — your catalog (90 min)</h2>
+      <p><code>docs/workshop/04-attendee-prompt-pack.md</code> — <strong>Track B</strong> ·
+        <a href="https://github.com/Keven1894/ucgis-agentloom-2026-workshop/blob/main/docs/workshop/04-attendee-prompt-pack.md">online</a></p>
+      <ul>
+        <li>Cline <strong>chooses</strong> slugs from discovery</li>
+        <li>One <strong>new Cline task</strong> per phase</li>
+        <li>2–3 domain proposals → accept → catalog → validators green</li>
+      </ul>
+    </section>
+
+    <section class="slide" data-note="D3 only — 5c is KG-driven polish after validators pass.">
+      <h2>D3 three-act finish</h2>
+      <table>
+        <tr><th>Phase</th><th>Outcome</th><th>KG</th></tr>
+        <tr><td>5 wire</td><td>1 marker</td><td>schema foot-guns</td></tr>
+        <tr><td>5b enrich</td><td>6 markers</td><td>same rules</td></tr>
+        <tr><td>5c polish</td><td>At-a-glance story</td><td><strong>four viewer questions</strong></td></tr>
+      </table>
+      <div class="quote" style="margin-top:1rem;font-size:1.1rem">Validators green ≠ a stranger understands the page. Capture the rule in KG, then polish.</div>
+    </section>
+
+    <section class="slide">
+      <h2>Cline hygiene</h2>
+      <ul>
+        <li>New task per phase — avoid 2h mega-task (W7: 136 min!)</li>
+        <li>Always append: "Do NOT read <code>*-graph.json</code>"</li>
+        <li>D3: filter sentinel <code>-999999</code> (missing, not zero)</li>
+        <li><code>fetch()</code> fails? <code>python -m http.server 8766</code></li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2>Validator quick fixes</h2>
+      <table>
+        <tr><th>FAIL</th><th>Fix</th></tr>
+        <tr><td>role text too short</td><td>Expand <code>data-catalog-role</code> section (≥10 chars)</td></tr>
+        <tr><td>JSON-LD missing field</td><td>Add to <code>@type: Dataset</code></td></tr>
+        <tr><td>timestamp not UTC-Z</td><td><code>dist/*-normalized.iso.json</code></td></tr>
+      </table>
+    </section>
+
+    <section class="slide">
+      <h2>Wrap — open a PR</h2>
+      <pre><code>git push -u origin workshop-YOURHANDLE
+# Open PR → upstream:
+# https://github.com/Keven1894/ucgis-agentloom-2026-workshop</code></pre>
+      <p class="muted" style="margin-top:1rem">Companion paper may cite PRs (with permission)</p>
+    </section>
+
+    <section class="slide">
+      <h1>Thank you</h1>
+      <ul>
+        <li>Workshop (fork upstream): <a href="https://github.com/Keven1894/ucgis-agentloom-2026-workshop">github.com/Keven1894/ucgis-agentloom-2026-workshop</a></li>
+        <li>Framework: <a href="https://github.com/Keven1894/AgentLoom">github.com/Keven1894/AgentLoom</a></li>
+        <li>Feedback welcome</li>
+      </ul>
+      <p class="muted" style="margin-top:2rem">← → arrow keys · F11 fullscreen</p>
+    </section>
+
+  </div>
+
+  <div class="counter" id="counter">1 / 25</div>
+  <div class="nav-hint">← → or Space · F11 fullscreen</div>
+  <div class="progress" id="progress"></div>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    let i = 0;
+    const counter = document.getElementById("counter");
+    const progress = document.getElementById("progress");
+
+    function show(n) {
+      i = Math.max(0, Math.min(n, slides.length - 1));
+      slides.forEach((s, j) => s.classList.toggle("active", j === i));
+      counter.textContent = `${i + 1} / ${slides.length}`;
+      progress.style.width = `${((i + 1) / slides.length) * 100}%`;
+      const note = slides[i].dataset.note;
+      document.title = note
+        ? `(${i + 1}) ${note.slice(0, 60)}…`
+        : `UCGIS Workshop (${i + 1}/${slides.length})`;
+    }
+
+    function next() { show(i + 1); }
+    function prev() { show(i - 1); }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
+        e.preventDefault(); next();
+      } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+        e.preventDefault(); prev();
+      } else if (e.key === "Home") {
+        e.preventDefault(); show(0);
+      } else if (e.key === "End") {
+        e.preventDefault(); show(slides.length - 1);
+      }
+    });
+
+    document.getElementById("deck").addEventListener("click", (e) => {
+      if (e.clientX > window.innerWidth / 2) next(); else prev();
+    });
+
+    show(0);
+  </script>
+</body>
+</html>

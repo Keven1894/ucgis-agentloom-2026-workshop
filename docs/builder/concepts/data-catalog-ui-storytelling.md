@@ -66,10 +66,16 @@ Every required field should be sourced from:
 
 Hardcoded `<p>TODO: provenance</p>` placeholders count as missing — the validator's HTML-pattern check rejects empty sections.
 
-### 3. KG-link is hyperlinkable
+### 3. Narrative polish (Phase 5c — beyond structural compliance)
+
+`behavior:builder:catalog-ui-must-tell-the-story` only checks that eight markers exist with minimum text length. A page can pass while a first-time viewer still cannot answer: *where is this from, what is it, how do I reuse it, and what am I looking at right now?*
+
+Domain knowledge `knowledge:domain:story-map-must-answer-four-viewer-questions` (proposed during workshop polish) captures this **quality bar** for geospatial story-map catalogs. Populate an at-a-glance summary from loaded data where possible; keep JSON paths in acquisition/processing, not in the lead sentence.
+
+### 4. KG-link is hyperlinkable
 The `kg-link` section should produce clickable links to the dashboard at `http://127.0.0.1:8000/#proposals` etc. — so a curious user can navigate from "this map" to "the propose-review history that produced it" in one click.
 
-### 4. Reuse must be honest
+### 5. Reuse must be honest
 If your catalog isn't actually reusable (alpha quality, no stable URL, license unclear), the `reuse` section should say so plainly. Lying via prefilled citation strings is worse than admitting the gap.
 
 ---

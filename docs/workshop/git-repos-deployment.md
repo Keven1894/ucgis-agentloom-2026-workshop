@@ -114,7 +114,7 @@ git push origin workshop-day-rc2
 **Live URLs**
 
 - Workshop: https://github.com/Keven1894/ucgis-agentloom-2026-workshop  
-- Latest RC: tag `workshop-day-rc2` (2026-05-31, dev `@429aeeb`)
+- Latest RC: tag **`workshop-day-rc4`** (2026-06-02, dev `@36948f2` + URL-paired slides) — includes Track B prompt pack (5b/5c), slides HTML, A5, verify script
 
 ### 3.4 Attendee clone (what we tell them)
 

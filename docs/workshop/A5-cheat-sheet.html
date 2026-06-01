@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>UCGIS Workshop — A5 Cheat Sheet</title>
+  <style>
+    @page { size: A5 portrait; margin: 10mm; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 9pt; line-height: 1.35; color: #111; max-width: 148mm;
+      margin: 0 auto; padding: 8mm;
+    }
+    h1 { font-size: 13pt; margin: 0 0 4pt; }
+    h2 { font-size: 10pt; margin: 8pt 0 3pt; border-bottom: 1px solid #ccc; }
+    pre, code { font-family: Consolas, monospace; font-size: 7.5pt; }
+    pre {
+      background: #f4f4f4; padding: 5pt 6pt; border-radius: 3pt;
+      white-space: pre-wrap; word-break: break-all; margin: 3pt 0;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 8pt; margin: 3pt 0; }
+    td, th { border: 1px solid #ccc; padding: 3pt 4pt; vertical-align: top; }
+    th { background: #eee; }
+    a { color: #0366d6; word-break: break-all; }
+    .muted { color: #555; font-size: 8pt; }
+    ul { margin: 2pt 0 2pt 14pt; padding: 0; }
+    li { margin: 1pt 0; }
+    @media screen {
+      body { padding: 2rem; max-width: 600px; box-shadow: 0 0 20px #0002; margin: 2rem auto; }
+    }
+  </style>
+</head>
+<body>
+  <h1>AgentLoom × Cline — Workshop Cheat Sheet</h1>
+  <p class="muted">UCGIS 2026 · Track B</p>
+
+  <h2>Repos (fork upstream, clone your copy)</h2>
+  <table>
+    <tr><th>What</th><th>URL</th></tr>
+    <tr><td>Workshop upstream (fork this)</td><td><a href="https://github.com/Keven1894/ucgis-agentloom-2026-workshop">github.com/Keven1894/ucgis-agentloom-2026-workshop</a></td></tr>
+    <tr><td>AgentLoom framework</td><td><a href="https://github.com/Keven1894/AgentLoom">github.com/Keven1894/AgentLoom</a></td></tr>
+    <tr><td>Organizer dev repo (D1 demo; FIU)</td><td><a href="https://dpanther04devtemp.fiu.edu/gitea/fiugiscenter/ucgis-agentloom-2026">Gitea ucgis-agentloom-2026</a> · <code>d1</code></td></tr>
+    <tr><td>D3 reference (optional)</td><td><a href="https://github.com/Keven1894/ucgis-agentloom-2026-workshop/tree/workshop-keven-w7">workshop-keven-w7</a></td></tr>
+  </table>
+
+  <h2>In-repo docs (after clone)</h2>
+  <ul>
+    <li><a href="https://github.com/Keven1894/ucgis-agentloom-2026-workshop/blob/main/docs/workshop/01-setup.md">01-setup.md</a></li>
+    <li><a href="https://github.com/Keven1894/ucgis-agentloom-2026-workshop/blob/main/docs/workshop/02-quickstart.md">02-quickstart.md</a></li>
+    <li><a href="https://github.com/Keven1894/ucgis-agentloom-2026-workshop/blob/main/docs/workshop/03-data-source-menu.md">03-data-source-menu.md</a></li>
+    <li><a href="https://github.com/Keven1894/ucgis-agentloom-2026-workshop/blob/main/docs/workshop/04-attendee-prompt-pack.md">04-attendee-prompt-pack.md</a></li>
+  </ul>
+
+  <h2>1. Setup (once)</h2>
+  <pre>git clone https://github.com/YOU/ucgis-agentloom-2026-workshop
+cd ucgis-agentloom-2026-workshop && git checkout -b workshop-YOU
+python -m venv .venv
+.venv\Scripts\pip install -r requirements.txt
+.venv\Scripts\python scripts\verify_workshop_machine.py
+.venv\Scripts\python scripts\test_mcp_kg_tools.py</pre>
+  <p>Cline: OpenAI · <strong>gpt-5.2</strong> · temp <strong>0.2</strong> · paste API key in settings</p>
+
+  <h2>2. Dashboard (keep running)</h2>
+  <pre>.venv\Scripts\python -m uvicorn server.dashboard.app:app --port 8000 --host 127.0.0.1</pre>
+  <p>Open <code>http://127.0.0.1:8000</code> → Proposals tab. Windows: omit <code>--reload</code>.</p>
+
+  <h2>3. Accept a proposal (human only)</h2>
+  <pre>.venv\Scripts\python scripts\kg\accept_proposal.py --proposal FILENAME.json</pre>
+  <p>Cline never runs accept. Review on dashboard first.</p>
+
+  <h2>4. Validators (must PASS before commit)</h2>
+  <pre>.venv\Scripts\python scripts\validators\run_all.py</pre>
+
+  <h2>5. Every Cline task — append</h2>
+  <pre>Do NOT read agents/knowledge-graphs/*-graph.json directly.
+Use MCP kg_search / kg_get_node / kg_list_proposals for KG context.</pre>
+
+  <h2>Track B rule</h2>
+  <p>Cline <strong>chooses</strong> slugs from discovery. Don't paste full propose CLI args.</p>
+
+  <h2>D3 phases (Track B)</h2>
+  <table>
+    <tr><th>Phase</th><th>What</th></tr>
+    <tr><td>2–3</td><td>Discover + propose on <code>suwannee-24h</code> (1 site)</td></tr>
+    <tr><td>5</td><td>Wire catalog → expect <strong>1</strong> marker</td></tr>
+    <tr><td>5b</td><td>Swap to <code>fl-stations-24h</code> → <strong>6</strong> markers, same KG</td></tr>
+    <tr><td>5c</td><td>Propose story-map narrative node → polish <strong>At a glance</strong> panel</td></tr>
+  </table>
+
+  <h2>Troubleshooting</h2>
+  <table>
+    <tr><th>Problem</th><th>Try</th></tr>
+    <tr><td>MCP green, no tools listed</td><td>Normal — ask Cline to kg_search in chat</td></tr>
+    <tr><td>MCP paths wrong</td><td>Global JSON → your fork's .venv python</td></tr>
+    <tr><td>fetch() fails on catalog</td><td><code>python -m http.server 8766</code> from repo root</td></tr>
+    <tr><td>Catalog role too short</td><td>Expand <code>data-catalog-role</code> section</td></tr>
+    <tr><td>D3 sentinel -999999</td><td>Missing data — filter before map/stats</td></tr>
+    <tr><td>Cline slow</td><td>New Cline task per phase</td></tr>
+  </table>
+
+  <h2>Commit + PR</h2>
+  <pre>git add starter/ docs/domain/ agents/knowledge-graphs/
+git commit -m "UCGIS workshop: D3 streamflow catalog"
+git push -u origin workshop-YOU
+# PR upstream: https://github.com/Keven1894/ucgis-agentloom-2026-workshop</pre>
+
+  <p class="muted">Full prompts: <a href="https://github.com/Keven1894/ucgis-agentloom-2026-workshop/blob/main/docs/workshop/04-attendee-prompt-pack.md">04-attendee-prompt-pack.md</a></p>
+</body>
+</html>
