@@ -1,3 +1,3 @@
 source_repo=ucgis-agentloom-2026
-source_ref=429aeeb
-snapshot_tag=workshop-day-rc2
+source_ref=cd5c4a7
+snapshot_tag=workshop-day-rc3

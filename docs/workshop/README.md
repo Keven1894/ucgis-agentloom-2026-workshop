@@ -10,8 +10,18 @@
 | 1 | [`01-setup.md`](./01-setup.md) | `.venv`, Cline, MCP, dashboard, validators |
 | 2 | [`02-quickstart.md`](./02-quickstart.md) | 5-min propose-review cycle (toy sample) |
 | 3 | [`03-data-source-menu.md`](./03-data-source-menu.md) | Pick D1–D4 for your catalog |
+| 4 | [`04-attendee-prompt-pack.md`](./04-attendee-prompt-pack.md) | **Track B** Cline prompts (workshop day) |
 | — | [`00-workshop-workflow.md`](./00-workshop-workflow.md) | Full A→G checklist (operators) |
 | — | [`welcome.html`](./welcome.html) | Browser cheat sheet |
+
+## Operators (not in public snapshot)
+
+| Doc | Purpose |
+| --- | --- |
+| [`git-repos-deployment.md`](./git-repos-deployment.md) | Clone, snapshot, push, tags |
+| [`06-slides-outline-draft.md`](./06-slides-outline-draft.md) | W6 slides draft for review |
+| [`W7-dress-rehearsal-runbook.md`](./W7-dress-rehearsal-runbook.md) | Track C operator rehearsal |
+| [`dress-rehearsal-2026-05-31.md`](./dress-rehearsal-2026-05-31.md) | W7 friction log |
 
 ## Reference
 
