@@ -30,6 +30,8 @@ Then open:
 - **Showcase hub:** http://127.0.0.1:8766/docs/workshop/showcase.html
 - **Dashboard:** http://127.0.0.1:8000/ (use `?ref=d1-earthquakes` etc. for KG overlay)
 
+Full server guide: [`docs/workshop/start-workshop-servers.md`](../docs/workshop/start-workshop-servers.md)
+
 `serve-all.sh` stages `demo/reference/*/index.html` into `starter/` (gitignored) so
 live catalog links work over HTTP.
 

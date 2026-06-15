@@ -70,7 +70,7 @@ bash demo/serve/serve-all.sh
 
 Open http://127.0.0.1:8766/docs/workshop/showcase.html — live catalogs, KG overlays via `?ref=d1-earthquakes`, etc.
 
-See [`demo/README.md`](demo/README.md) for layout and maintainer notes.
+See [`demo/README.md`](demo/README.md) for layout and [`docs/workshop/start-workshop-servers.md`](docs/workshop/start-workshop-servers.md) for server setup.
 
 ## Toolchain
 
