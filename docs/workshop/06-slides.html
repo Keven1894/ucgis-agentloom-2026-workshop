@@ -77,11 +77,12 @@
 <body>
   <div class="deck" id="deck">
 
-    <section class="slide active" data-note="Title slide — introduce yourself and lab vs UCGIS date.">
+    <section class="slide active" data-note="Title slide — introduce the team; theme first, tools are the means.">
       <span class="badge">UCGIS 2026 Pre-Symposium · June 15</span>
-      <h1>AgentLoom × Cline</h1>
-      <h2>Building FAIR Geospatial Catalogs with Human-in-the-Loop KG</h2>
-      <p class="muted">Keven Guan · FIU GIS Center · Lab rehearsal 2026-06-02</p>
+      <h1>Human-in-the-Loop Knowledge Graphs<br>for FAIR Geospatial Catalogs</h1>
+      <h2>A hands-on workshop: explore data with an agent, externalize knowledge, ship a catalog</h2>
+      <p style="margin-top:1.25rem">Levente Juhász · Boyuan (Keven) Guan · Wencong Cui</p>
+      <p class="muted" style="margin-top:0.75rem">Powered by <a href="https://keven1894.github.io/AgentLoom/">AgentLoom</a></p>
     </section>
 
     <section class="slide" data-note="Logistics — lab uses BYOK; UCGIS will use pooled keys.">
@@ -91,8 +92,8 @@
         <li>Upstream (fork this): <a href="https://github.com/Keven1894/ucgis-agentloom-2026-workshop">github.com/Keven1894/ucgis-agentloom-2026-workshop</a></li>
         <li>GitHub account · VS Code + Cline · Python 3.11+</li>
         <li><strong>Today (lab):</strong> BYOK in Cline · gpt-5.2 @ temp 0.2</li>
-        <li><strong>UCGIS:</strong> API key on A5 slip (day-of)</li>
-        <li>Help: raise hand · A5 cheat sheet on desk</li>
+        <li><strong>UCGIS:</strong> API key shared day-of</li>
+        <li>Help: raise hand · cheat sheet in your clone: <a href="A5-cheat-sheet.html"><code>docs/workshop/A5-cheat-sheet.html</code></a></li>
       </ul>
     </section>
 
@@ -180,12 +181,11 @@
       </table>
     </section>
 
-    <section class="slide" data-note="Switch to dev d1 — attendees watch only.">
+    <section class="slide" data-note="Show the local reference build — attendees watch only.">
       <h2>Finish line (lecturer demo)</h2>
-      <p>Your fork has the <strong>framework</strong> — <strong>no D1 catalog</strong>.</p>
+      <p>Your fork has the <strong>framework</strong> — <strong>no finished catalog</strong>.</p>
       <p style="margin-top:1rem">Watch: 8 storytelling sections · Schema.org JSON-LD · live map</p>
-      <p class="muted">Lecturer demo only — organizer dev repo branch <code>d1</code> (FIU Gitea, not in attendee fork):<br>
-        <a href="https://dpanther04devtemp.fiu.edu/gitea/fiugiscenter/ucgis-agentloom-2026">ucgis-agentloom-2026</a> · branch <code>d1</code></p>
+      <p class="muted">Lecturer demo only — organizer reference build running on this laptop, not in the attendee fork.</p>
     </section>
 
     <section class="slide" data-note="Live: Cline kg_search in chat.">
@@ -216,6 +216,7 @@
     <section class="slide">
       <h2>Pick your source (Block 3)</h2>
       <ul>
+        <li><strong>D1</strong> USGS earthquakes (no key)</li>
         <li><strong>D2</strong> OpenAQ air quality (API key)</li>
         <li><strong>D3</strong> USGS NWIS streamflow (recommended — no key)</li>
         <li><strong>D4</strong> Natural Earth admin-0 boundaries</li>
