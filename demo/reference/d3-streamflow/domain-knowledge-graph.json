@@ -1,0 +1,106 @@
+{
+  "graphType": "knowledge",
+  "role": "role-domain",
+  "project": "ucgis-agentloom-2026",
+  "version": "0.1.0",
+  "generatedAt": "2026-05-19",
+  "description": "UCGIS 2026 workshop reference KG — Geospatial / catalog-app domain knowledge (emerges via propose-review). Root-only on main; per-source nodes live on dN branches.",
+  "nodes": [
+    {
+      "id": "knowledge:domain:root",
+      "type": "root",
+      "data": {
+        "title": "Domain Knowledge Root",
+        "description": "Root of the domain (geospatial / catalog-app) knowledge tree.",
+        "category": "domain-meta"
+      },
+      "relationships": {
+        "parent": null,
+        "children": [
+          "knowledge:domain:nwis-sentinel-minus-999999-means-no-data",
+          "knowledge:domain:nwis-parameter-codes-are-opaque-5-digit-strings",
+          "knowledge:domain:nwis-site-ids-are-strings-in-nested-timeseries",
+          "knowledge:domain:story-map-must-answer-four-viewer-questions"
+        ]
+      }
+    },
+    {
+      "id": "knowledge:domain:nwis-sentinel-minus-999999-means-no-data",
+      "type": "concept",
+      "data": {
+        "title": "NWIS -999999 means no data",
+        "description": "Streamflow IV JSON uses -999999 as missing-data sentinel; must filter before stats/map coloring.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/nwis-sentinel-minus-999999-means-no-data.md",
+        "tags": [
+          "domain",
+          "proposed"
+        ]
+      },
+      "relationships": {
+        "parent": "knowledge:domain:root",
+        "children": []
+      }
+    },
+    {
+      "id": "knowledge:domain:nwis-parameter-codes-are-opaque-5-digit-strings",
+      "type": "concept",
+      "data": {
+        "title": "NWIS parameter codes are opaque 5-digit strings",
+        "description": "00060 discharge cfs etc.; catalog must label parameterCode not assume meaning from digits alone.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/nwis-parameter-codes-are-opaque-5-digit-strings.md",
+        "tags": [
+          "domain",
+          "proposed"
+        ]
+      },
+      "relationships": {
+        "parent": "knowledge:domain:root",
+        "children": []
+      }
+    },
+    {
+      "id": "knowledge:domain:nwis-site-ids-are-strings-in-nested-timeseries",
+      "type": "concept",
+      "data": {
+        "title": "NWIS site IDs are strings in nested timeSeries",
+        "description": "Do not parse site codes as integers; walk timeSeries[].sourceInfo.siteCode[] structure.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/nwis-site-ids-are-strings-in-nested-timeseries.md",
+        "tags": [
+          "domain",
+          "proposed"
+        ]
+      },
+      "relationships": {
+        "parent": "knowledge:domain:root",
+        "children": []
+      }
+    },
+    {
+      "id": "knowledge:domain:story-map-must-answer-four-viewer-questions",
+      "type": "concept",
+      "data": {
+        "title": "Story map must answer four viewer questions at a glance",
+        "description": "After data loads, plain-language answers: where from, what it is, how to reuse, what is on screen now — not just JSON paths.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/story-map-must-answer-four-viewer-questions.md",
+        "tags": [
+          "domain",
+          "proposed",
+          "story-map",
+          "catalog-ui"
+        ]
+      },
+      "relationships": {
+        "parent": "knowledge:domain:root",
+        "children": []
+      }
+    }
+  ],
+  "metadata": {
+    "last_updated": "2026-06-02",
+    "total_nodes": 5
+  }
+}

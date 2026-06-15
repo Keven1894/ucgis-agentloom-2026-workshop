@@ -1,0 +1,47 @@
+{
+  "catalogBaseUrl": "http://127.0.0.1:8766",
+  "dashboardBaseUrl": "http://127.0.0.1:8000",
+  "showcaseUrl": "http://127.0.0.1:8766/docs/workshop/showcase.html",
+  "demos": [
+    {
+      "id": "d1-earthquakes",
+      "label": "D1",
+      "title": "USGS Earthquakes",
+      "subtitle": "GeoJSON events · epoch-ms timestamps",
+      "starterDir": "earthquake-catalog",
+      "snapshot": "d1-usgs-earthquakes-week.geojson",
+      "screenshot": "demo/reference/d1-earthquakes/D1-screen.png",
+      "status": "ready"
+    },
+    {
+      "id": "d2-openaq",
+      "label": "D2",
+      "title": "OpenAQ Air Quality",
+      "subtitle": "Nested JSON · API key · two-call join",
+      "starterDir": "openaq-catalog",
+      "snapshot": "d2-openaq-locations-page1.json",
+      "screenshot": "demo/reference/d2-openaq/d2-screen.png",
+      "status": "ready"
+    },
+    {
+      "id": "d3-streamflow",
+      "label": "D3",
+      "title": "USGS NWIS Streamflow",
+      "subtitle": "Nested time series · sentinel -999999",
+      "starterDir": "streamflow-catalog",
+      "snapshot": "d3-usgs-nwis-fl-stations-24h.json",
+      "screenshot": "demo/reference/d3-streamflow/d3-screen.png",
+      "status": "ready"
+    },
+    {
+      "id": "d4-natural-earth",
+      "label": "D4",
+      "title": "Natural Earth Admin-0",
+      "subtitle": "Country polygons · basemap / join layer",
+      "starterDir": "boundaries-catalog",
+      "snapshot": "d4-natural-earth-admin0.geojson",
+      "screenshot": "demo/reference/d4-natural-earth/d4-screen.png",
+      "status": "ready"
+    }
+  ]
+}

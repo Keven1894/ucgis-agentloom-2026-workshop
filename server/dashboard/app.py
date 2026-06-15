@@ -32,7 +32,7 @@ from fastapi.staticfiles import StaticFiles
 WORKSPACE = Path(__file__).resolve().parents[2]
 KG_DIR = WORKSPACE / "agents" / "knowledge-graphs"
 PROPOSALS_DIR = KG_DIR / "proposals"
-REFERENCE_DIR = WORKSPACE / "private" / "reference"
+REFERENCE_DIR = WORKSPACE / "demo" / "reference"
 REFERENCE_MANIFEST = REFERENCE_DIR / "manifest.json"
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 
@@ -186,7 +186,7 @@ def _master_edges(master: dict, all_ids: set[str]) -> list[dict]:
 
 @app.get("/api/reference-demos")
 def reference_demos() -> dict:
-    """List local reference builds (private/reference/) for the showcase hub."""
+    """List reference builds (demo/reference/) for the showcase hub."""
     manifest = _load_reference_manifest()
     demos_out: list[dict] = []
     for demo in manifest.get("demos", []):
@@ -218,7 +218,7 @@ def kg_data(ref: str | None = Query(default=None)) -> dict:
     visualization a single weakly-connected component instead of 6 islands.
 
     Optional ?ref=d1-earthquakes overlays the domain-knowledge graph from
-    private/reference/<ref>/domain-knowledge-graph.json without mutating the
+    demo/reference/<ref>/domain-knowledge-graph.json without mutating the
     committed workshop KG on disk.
     """
     ref_demo = _reference_demo(ref) if ref else None

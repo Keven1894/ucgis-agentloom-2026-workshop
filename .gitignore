@@ -5,7 +5,7 @@ venv/
 node_modules/
 .env
 .env.local
-private/
+starter/
 *.log
 .DS_Store
 .vscode/

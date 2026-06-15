@@ -1,0 +1,73 @@
+{
+  "graphType": "knowledge",
+  "role": "role-domain",
+  "project": "ucgis-agentloom-2026",
+  "version": "0.1.0",
+  "generatedAt": "2026-05-19",
+  "description": "REFERENCE KG after D2 OpenAQ catalog build.",
+  "nodes": [
+    {
+      "id": "knowledge:domain:root",
+      "type": "root",
+      "data": { "title": "Domain Knowledge Root", "description": "Root of the domain knowledge tree.", "category": "domain-meta" },
+      "relationships": {
+        "parent": null,
+        "children": [
+          "knowledge:domain:openaq-coordinates-are-latitude-longitude-object",
+          "knowledge:domain:openaq-locations-then-measurements-two-call-join",
+          "knowledge:domain:openaq-parameter-units-vary",
+          "knowledge:domain:story-map-must-answer-four-viewer-questions"
+        ]
+      }
+    },
+    {
+      "id": "knowledge:domain:openaq-coordinates-are-latitude-longitude-object",
+      "type": "concept",
+      "data": {
+        "title": "OpenAQ coordinates are latitude/longitude object",
+        "description": "coordinates is { latitude, longitude } — not GeoJSON [lon,lat]. Can be null; filter before map.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/openaq-coordinates-are-latitude-longitude-object.md",
+        "tags": ["domain", "proposed"]
+      },
+      "relationships": { "parent": "knowledge:domain:root", "children": [] }
+    },
+    {
+      "id": "knowledge:domain:openaq-locations-then-measurements-two-call-join",
+      "type": "concept",
+      "data": {
+        "title": "OpenAQ locations then measurements is a two-call join",
+        "description": "GET /v3/locations returns stations; measurements per locationId need a second call. Do not assume flat time series in locations JSON.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/openaq-locations-then-measurements-two-call-join.md",
+        "tags": ["domain", "proposed"]
+      },
+      "relationships": { "parent": "knowledge:domain:root", "children": [] }
+    },
+    {
+      "id": "knowledge:domain:openaq-parameter-units-vary",
+      "type": "concept",
+      "data": {
+        "title": "OpenAQ parameter units vary by sensor",
+        "description": "sensors[].parameter.units includes µg/m³, ppm, ppb — normalize before cross-station comparison or plotting on one axis.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/openaq-parameter-units-vary.md",
+        "tags": ["domain", "proposed"]
+      },
+      "relationships": { "parent": "knowledge:domain:root", "children": [] }
+    },
+    {
+      "id": "knowledge:domain:story-map-must-answer-four-viewer-questions",
+      "type": "concept",
+      "data": {
+        "title": "Story map must answer four viewer questions at a glance",
+        "description": "Plain-language: where from, what it is, how to reuse, what is on screen now.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/story-map-must-answer-four-viewer-questions.md",
+        "tags": ["domain", "proposed", "story-map"]
+      },
+      "relationships": { "parent": "knowledge:domain:root", "children": [] }
+    }
+  ],
+  "metadata": { "last_updated": "2026-06-14", "total_nodes": 5 }
+}

@@ -1,0 +1,106 @@
+{
+  "graphType": "knowledge",
+  "role": "role-domain",
+  "project": "ucgis-agentloom-2026",
+  "version": "0.1.0",
+  "generatedAt": "2026-05-19",
+  "description": "REFERENCE KG state after building the D1 (USGS Earthquakes) catalog. Mirrors what an attendee's domain KG looks like once the D1 foot-gun nodes + shared story-map node are proposed and accepted. NOT committed to the public workshop repo (which stays root-only).",
+  "nodes": [
+    {
+      "id": "knowledge:domain:root",
+      "type": "root",
+      "data": {
+        "title": "Domain Knowledge Root",
+        "description": "Root of the domain (geospatial / catalog-app) knowledge tree.",
+        "category": "domain-meta"
+      },
+      "relationships": {
+        "parent": null,
+        "children": [
+          "knowledge:domain:usgs-quake-time-is-epoch-milliseconds",
+          "knowledge:domain:usgs-quake-coords-are-lon-lat-depth",
+          "knowledge:domain:usgs-quake-many-nullable-fields",
+          "knowledge:domain:story-map-must-answer-four-viewer-questions"
+        ]
+      }
+    },
+    {
+      "id": "knowledge:domain:usgs-quake-time-is-epoch-milliseconds",
+      "type": "concept",
+      "data": {
+        "title": "USGS quake time is epoch milliseconds",
+        "description": "properties.time and properties.updated are Unix epoch milliseconds (not seconds, not ISO 8601). Pass straight to new Date(ms); do NOT multiply/divide by 1000.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/usgs-quake-time-is-epoch-milliseconds.md",
+        "tags": [
+          "domain",
+          "proposed"
+        ]
+      },
+      "relationships": {
+        "parent": "knowledge:domain:root",
+        "children": []
+      }
+    },
+    {
+      "id": "knowledge:domain:usgs-quake-coords-are-lon-lat-depth",
+      "type": "concept",
+      "data": {
+        "title": "GeoJSON coordinates are lon, lat, depth",
+        "description": "geometry.coordinates = [longitude, latitude, depth_km] — longitude first. Older entries may be 2-tuples; pad to 3 with depth=null. Leaflet wants [lat, lon] — swap order.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/usgs-quake-coords-are-lon-lat-depth.md",
+        "tags": [
+          "domain",
+          "proposed"
+        ]
+      },
+      "relationships": {
+        "parent": "knowledge:domain:root",
+        "children": []
+      }
+    },
+    {
+      "id": "knowledge:domain:usgs-quake-many-nullable-fields",
+      "type": "concept",
+      "data": {
+        "title": "USGS quake feed has many nullable fields",
+        "description": "felt, cdi, mmi, tsunami, alert are frequently null; mag can be null/negative. Do not crash on null. properties.place is free human text, parse-hostile.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/usgs-quake-many-nullable-fields.md",
+        "tags": [
+          "domain",
+          "proposed"
+        ]
+      },
+      "relationships": {
+        "parent": "knowledge:domain:root",
+        "children": []
+      }
+    },
+    {
+      "id": "knowledge:domain:story-map-must-answer-four-viewer-questions",
+      "type": "concept",
+      "data": {
+        "title": "Story map must answer four viewer questions at a glance",
+        "description": "After data loads, plain-language answers: where from, what it is, how to reuse, what is on screen now — not just JSON paths.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/story-map-must-answer-four-viewer-questions.md",
+        "tags": [
+          "domain",
+          "proposed",
+          "story-map",
+          "catalog-ui"
+        ]
+      },
+      "relationships": {
+        "parent": "knowledge:domain:root",
+        "children": []
+      }
+    }
+  ],
+  "metadata": {
+    "last_updated": "2026-06-14",
+    "total_nodes": 5
+  }
+}

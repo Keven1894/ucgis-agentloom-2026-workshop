@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>D3 Streamflow Catalog — Florida river gages</title>
+
+    <!-- Leaflet 1.9.4 (unpkg) -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+
+    <style>
+      :root {
+        --topbar-h: 56px;
+        --sidebar-w: 420px;
+        --bg: #0b1220;
+        --panel: #0f1a33;
+        --text: #e7eefc;
+        --muted: #aab7d6;
+        --border: rgba(255, 255, 255, 0.12);
+        --link: #7cc4ff;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
+          "Noto Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      a {
+        color: var(--link);
+      }
+
+      .topbar {
+        height: var(--topbar-h);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent);
+      }
+
+      .topbar h1 {
+        font-size: 16px;
+        margin: 0;
+        font-weight: 650;
+        letter-spacing: 0.2px;
+      }
+
+      .layout {
+        height: calc(100% - var(--topbar-h));
+        display: grid;
+        grid-template-columns: var(--sidebar-w) 1fr;
+      }
+
+      .sidebar {
+        overflow: auto;
+        border-right: 1px solid var(--border);
+        background: var(--panel);
+        padding: 12px;
+      }
+
+      .sidebar section {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 12px;
+        margin: 10px 0;
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .sidebar h2 {
+        margin: 0 0 8px;
+        font-size: 14px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar p,
+      .sidebar ul {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .sidebar ul {
+        padding-left: 18px;
+      }
+
+      .main {
+        position: relative;
+        min-width: 0;
+      }
+
+      /* data-view must contain a child, e.g. #map */
+      #map {
+        height: 100%;
+        width: 100%;
+      }
+
+      .badge {
+        font-size: 12px;
+        padding: 3px 8px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: var(--muted);
+      }
+
+      .at-a-glance {
+        border-color: rgba(124, 196, 255, 0.35);
+        background: rgba(124, 196, 255, 0.08);
+      }
+
+      .at-a-glance dl {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 6px 12px;
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .at-a-glance dt {
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .at-a-glance dd {
+        margin: 0;
+      }
+
+      .lay-lead {
+        font-size: 14px;
+        line-height: 1.5;
+        margin: 0 0 8px;
+      }
+    </style>
+
+    <!-- Schema.org Dataset JSON-LD (required) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Dataset",
+        "name": "USGS NWIS Streamflow (D3) — Florida stations (6 sites)",
+        "description": "Workshop catalog UI for USGS NWIS Instantaneous Values (IV) streamflow (parameter 00060) across six Florida river gages. Vendored snapshot; same parser scales from one site to many.",
+        "url": "http://127.0.0.1:8000/",
+        "license": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+        "creator": {
+          "@type": "Organization",
+          "name": "U.S. Geological Survey (USGS)"
+        },
+        "distribution": [
+          {
+            "@type": "DataDownload",
+            "name": "Vendored snapshot (workshop)",
+            "contentUrl": "data/snapshots/d3-usgs-nwis-fl-stations-24h.json",
+            "encodingFormat": "application/json"
+          },
+          {
+            "@type": "DataDownload",
+            "name": "NWIS IV JSON endpoint",
+            "contentUrl": "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=02320500,02323500,02358000,02292900,02236000,02246000&parameterCd=00060&period=PT24H",
+            "encodingFormat": "application/json"
+          }
+        ],
+        "dateModified": "2026-06-02"
+      }
+    </script>
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>D3 Streamflow Catalog (FL stations)</h1>
+      <span id="siteCount" class="badge">Loading…</span>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <section class="at-a-glance" id="at-a-glance" aria-label="At a glance summary">
+          <h2>At a glance</h2>
+          <dl>
+            <dt>Where from?</dt>
+            <dd id="agl-source">Loading…</dd>
+            <dt>What is it?</dt>
+            <dd id="agl-what">Loading…</dd>
+            <dt>How to use?</dt>
+            <dd id="agl-reuse">Loading…</dd>
+            <dt>On screen now</dt>
+            <dd id="agl-now">Loading…</dd>
+          </dl>
+        </section>
+
+        <section data-catalog-role="title">
+          <h2>Title</h2>
+          <p class="lay-lead">
+            <strong>Florida river discharge (streamflow)</strong> — six USGS gaging
+            stations, last 24 hours of 15-minute readings, shown on an interactive map.
+          </p>
+          <p>
+            Each blue marker is one USGS stream gage. Click a marker or use the station
+            list below the map to see the latest discharge and a short sparkline.
+          </p>
+        </section>
+
+        <section data-catalog-role="provenance">
+          <h2>Provenance</h2>
+          <p>
+            Data come from the
+            <a href="https://www.usgs.gov/" rel="noopener">U.S. Geological Survey (USGS)</a>
+            National Water Information System (NWIS), Instantaneous Values (IV) web service.
+            This workshop page uses a vendored JSON snapshot (May 2026) so the demo works
+            offline; the live feed URL is in the JSON-LD block.
+          </p>
+          <p>
+            USGS data are provisional and subject to revision. License and credits:
+            <a href="https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits" rel="noopener">USGS copyright policy</a>.
+          </p>
+        </section>
+
+        <section data-catalog-role="acquisition">
+          <h2>Acquisition</h2>
+          <p>
+            Snapshot file:
+            <code>d3-usgs-nwis-fl-stations-24h.json</code> (six site IDs, parameter
+            <code>00060</code>, period <code>PT24H</code>). Fetched once and stored under
+            <code>data/snapshots/</code> for reproducible workshop builds.
+          </p>
+          <p>
+            Serve this page with a local static server (<code>python -m http.server</code>)
+            — browser security blocks <code>fetch()</code> on <code>file://</code> URLs.
+          </p>
+        </section>
+
+        <section data-catalog-role="data-shape">
+          <h2>Data shape</h2>
+          <p>
+            Six river stations across Florida. Each record is discharge in cubic feet per
+            second (cfs), USGS parameter code <strong>00060</strong>, with latitude/longitude
+            for mapping. Observations are 15-minute instantaneous values over roughly the
+            past 24 hours.
+          </p>
+          <p class="muted" style="margin-top:8px;font-size:12px">
+            Technical: nested NWIS JSON — <code>value.timeSeries[]</code> per site, values
+            under <code>values[].value[]</code>.
+          </p>
+        </section>
+
+        <section data-catalog-role="processing">
+          <h2>Processing</h2>
+          <p>
+            This page filters USGS missing-data sentinels (<code>-999999</code>), picks the
+            latest valid reading per station, draws sparklines from the last 48 valid points,
+            and plots markers on an OpenStreetMap basemap. No unit conversion applied.
+          </p>
+        </section>
+
+        <section data-catalog-role="kg-link">
+          <h2>KG link</h2>
+          <ul>
+            <li>
+              Story map four viewer questions
+              <span class="badge">knowledge:domain:story-map-must-answer-four-viewer-questions</span>
+            </li>
+            <li>
+              NWIS -999999 means no data
+              <span class="badge">knowledge:domain:nwis-sentinel-minus-999999-means-no-data</span>
+            </li>
+            <li>
+              NWIS parameter codes are opaque 5-digit strings
+              <span class="badge">knowledge:domain:nwis-parameter-codes-are-opaque-5-digit-strings</span>
+            </li>
+            <li>
+              NWIS site IDs are strings in nested timeSeries
+              <span class="badge">knowledge:domain:nwis-site-ids-are-strings-in-nested-timeseries</span>
+            </li>
+          </ul>
+        </section>
+
+        <section data-catalog-role="reuse">
+          <h2>Reuse</h2>
+          <p>
+            Cite USGS as the data source. Example: "Discharge data from USGS NWIS (parameter
+            00060), retrieved via waterservices.usgs.gov." Confirm provisional-data policy
+            before publishing analysis or derivatives. Workshop scaffolding — not a production
+            data portal.
+          </p>
+        </section>
+      </aside>
+
+      <main class="main">
+        <section data-catalog-role="data-view" style="height: 100%">
+          <div id="map" aria-label="Map placeholder"></div>
+        </section>
+      </main>
+    </div>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script>
+      const NORMALIZED_URL = "../../dist/d3-normalized.iso.json";
+      const SNAPSHOT_URL = "../../data/snapshots/d3-usgs-nwis-fl-stations-24h.json";
+      const NO_DATA_SENTINEL = -999999;
+
+      const siteCountEl = document.getElementById("siteCount");
+
+      // Base map: Florida-ish default view (used if no points parse).
+      const map = L.map("map", { zoomControl: true }).setView([29.7, -82.3], 7);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors"
+      }).addTo(map);
+
+      const markerLayer = L.layerGroup().addTo(map);
+
+      function toNumberMaybe(v) {
+        if (v === null || v === undefined) return null;
+        const n = Number(v);
+        return Number.isFinite(n) ? n : null;
+      }
+
+      function escapeHtml(s) {
+        return String(s)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      function makeSparklineSvg(values, width = 120, height = 24) {
+        const nums = values.map(toNumberMaybe).filter((n) => n !== null);
+        if (nums.length < 2) {
+          return `<span class="badge">no history</span>`;
+        }
+        const min = Math.min(...nums);
+        const max = Math.max(...nums);
+        const range = max - min || 1;
+        const stepX = width / (nums.length - 1);
+        const points = nums
+          .map((v, i) => {
+            const x = i * stepX;
+            const y = height - ((v - min) / range) * height;
+            return `${x.toFixed(1)},${y.toFixed(1)}`;
+          })
+          .join(" ");
+
+        return `
+          <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Sparkline">
+            <polyline fill="none" stroke="rgba(124,196,255,0.95)" stroke-width="2" points="${points}" />
+          </svg>
+        `;
+      }
+
+      function parseNwisSnapshot(payload) {
+        const ts = payload?.value?.timeSeries;
+        if (!Array.isArray(ts)) return [];
+
+        return ts
+          .map((series) => {
+            const sourceInfo = series?.sourceInfo ?? {};
+            const siteCode0 = (sourceInfo.siteCode ?? [])[0] ?? {};
+            const siteId = siteCode0.value ?? null;
+            const siteName = sourceInfo.siteName ?? null;
+            const geo = sourceInfo?.geoLocation?.geogLocation ?? {};
+            const lat = toNumberMaybe(geo.latitude);
+            const lon = toNumberMaybe(geo.longitude);
+
+            const variable = series?.variable ?? {};
+            const parameterCode = (variable.variableCode ?? [])[0]?.value ?? null;
+            const unitCode = variable?.unit?.unitCode ?? null;
+            const noDataValue = toNumberMaybe(variable.noDataValue);
+
+            const obs = (series?.values ?? [])[0]?.value ?? [];
+            const obsNorm = Array.isArray(obs)
+              ? obs
+                  .map((o) => ({
+                    value: toNumberMaybe(o?.value),
+                    dateTime: o?.dateTime ?? null,
+                    qualifiers: Array.isArray(o?.qualifiers) ? o.qualifiers : []
+                  }))
+                  .filter((o) => o.value !== null && o.dateTime)
+              : [];
+
+            const sentinel = Number.isFinite(noDataValue) ? noDataValue : NO_DATA_SENTINEL;
+            const obsFiltered = obsNorm.filter((o) => o.value !== sentinel);
+
+            const latest = obsFiltered.reduce(
+              (acc, cur) => (acc === null || cur.dateTime > acc.dateTime ? cur : acc),
+              null
+            );
+
+            // Short history for sparkline: last 48 valid points (or fewer)
+            const history = obsFiltered.slice(-48).map((o) => o.value);
+
+            if (!siteId || lat === null || lon === null) return null;
+
+            return {
+              siteId: String(siteId),
+              siteName,
+              lat,
+              lon,
+              parameterCode: parameterCode ? String(parameterCode) : null,
+              unitCode,
+              latest,
+              history
+            };
+          })
+          .filter(Boolean);
+      }
+
+      function parseNormalizedIso(payload) {
+        const series = payload?.series;
+        if (!Array.isArray(series)) return [];
+
+        return series
+          .map((s) => {
+            const siteId = s?.site_id;
+            const lat = toNumberMaybe(s?.latitude);
+            const lon = toNumberMaybe(s?.longitude);
+            if (!siteId || lat === null || lon === null) return null;
+
+            const obs = Array.isArray(s?.observations) ? s.observations : [];
+            const obsNorm = obs
+              .map((o) => ({
+                value: toNumberMaybe(o?.value),
+                dateTime: o?.datetime ?? null,
+                qualifiers: Array.isArray(o?.qualifiers) ? o.qualifiers : []
+              }))
+              .filter((o) => o.value !== null && o.dateTime);
+
+            const latest = obsNorm.reduce(
+              (acc, cur) => (acc === null || cur.dateTime > acc.dateTime ? cur : acc),
+              null
+            );
+            const history = obsNorm.slice(-48).map((o) => o.value);
+
+            return {
+              siteId: String(siteId),
+              siteName: s?.site_name ?? null,
+              lat,
+              lon,
+              parameterCode: s?.parameter_code ? String(s.parameter_code) : null,
+              unitCode: s?.unit ?? null,
+              latest,
+              history
+            };
+          })
+          .filter(Boolean);
+      }
+
+      function buildPopupHtml(site) {
+        const latestVal = site.latest?.value;
+        const latestDt = site.latest?.dateTime;
+        const qualifiers = (site.latest?.qualifiers ?? []).join(", ");
+        return `
+          <div style="min-width:240px">
+            <div><strong>Site</strong>: ${escapeHtml(site.siteId)}</div>
+            <div><strong>Name</strong>: ${escapeHtml(site.siteName ?? "(unnamed)")}</div>
+            <div><strong>Parameter</strong>: ${escapeHtml(site.parameterCode ?? "(unknown)")}</div>
+            <div><strong>Latest</strong>: ${escapeHtml(latestVal ?? "n/a")} ${escapeHtml(site.unitCode ?? "")}</div>
+            <div><strong>When</strong>: ${escapeHtml(latestDt ?? "n/a")}</div>
+            <div><strong>Qualifiers</strong>: ${escapeHtml(qualifiers || "(none)")}</div>
+          </div>
+        `;
+      }
+
+      function updateAtAGlance(sites, usedNormalized) {
+        const source = document.getElementById("agl-source");
+        const what = document.getElementById("agl-what");
+        const reuse = document.getElementById("agl-reuse");
+        const now = document.getElementById("agl-now");
+        if (!source) return;
+
+        source.textContent =
+          "U.S. Geological Survey NWIS (Instantaneous Values), vendored workshop snapshot.";
+
+        what.textContent =
+          "River discharge (streamflow) in cubic feet per second (cfs), parameter 00060, six Florida gages, ~24 h of 15-min readings.";
+
+        reuse.textContent =
+          "Cite USGS NWIS; confirm provisional-data policy before publishing. Snapshot path in JSON-LD distribution.";
+
+        if (!sites.length) {
+          now.textContent = "No stations loaded — check static server and snapshot path.";
+          return;
+        }
+
+        const dts = sites
+          .map((s) => s.latest?.dateTime)
+          .filter(Boolean)
+          .sort();
+        const earliest = dts[0] ?? "n/a";
+        const latest = dts[dts.length - 1] ?? "n/a";
+        const unit = sites[0]?.unitCode ?? "ft3/s";
+        const names = sites
+          .slice(0, 3)
+          .map((s) => s.siteName?.split(",")[0] ?? s.siteId)
+          .join("; ");
+        const more = sites.length > 3 ? ` (+${sites.length - 3} more)` : "";
+
+        now.textContent = `${sites.length} markers on map (${unit}). Latest window in snapshot: ${earliest} → ${latest}. Examples: ${names}${more}.${usedNormalized ? " Timestamps from normalized dist/ output." : ""}`;
+      }
+
+      function renderSites(sites, usedNormalized = false) {
+        markerLayer.clearLayers();
+
+        const sidebar = document.querySelector(".sidebar");
+        const existing = document.getElementById("site-list");
+        if (existing) existing.remove();
+
+        const list = document.createElement("section");
+        list.id = "site-list";
+        list.innerHTML = `
+          <h2>Sites</h2>
+          <p>Clickable station list derived from the snapshot.</p>
+          <div id="site-items"></div>
+        `;
+        // Insert near top (after title section)
+        const titleSection = sidebar.querySelector('[data-catalog-role="title"]');
+        titleSection?.insertAdjacentElement("afterend", list);
+
+        const items = list.querySelector("#site-items");
+
+        const bounds = [];
+        for (const site of sites) {
+          const marker = L.marker([site.lat, site.lon])
+            .addTo(markerLayer)
+            .bindPopup(buildPopupHtml(site));
+          bounds.push([site.lat, site.lon]);
+
+          const row = document.createElement("div");
+          row.style.display = "grid";
+          row.style.gridTemplateColumns = "1fr auto";
+          row.style.gap = "8px";
+          row.style.alignItems = "center";
+          row.style.margin = "10px 0";
+
+          const left = document.createElement("div");
+          left.innerHTML = `
+            <div style="font-weight:650; font-size:13px; margin-bottom:4px;">${escapeHtml(site.siteId)} — ${escapeHtml(site.parameterCode ?? "")}</div>
+            <div style="color: var(--muted); font-size:12px; margin-bottom:6px;">${escapeHtml(site.siteName ?? "")}</div>
+            <div>${makeSparklineSvg(site.history)}</div>
+          `;
+
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.textContent = "Zoom";
+          btn.style.cursor = "pointer";
+          btn.style.borderRadius = "10px";
+          btn.style.border = "1px solid var(--border)";
+          btn.style.background = "rgba(255,255,255,0.06)";
+          btn.style.color = "var(--text)";
+          btn.style.padding = "8px 10px";
+
+          btn.addEventListener("click", () => {
+            map.flyTo([site.lat, site.lon], 11, { duration: 0.6 });
+            marker.openPopup();
+          });
+
+          row.appendChild(left);
+          row.appendChild(btn);
+          items.appendChild(row);
+        }
+
+        if (bounds.length) {
+          map.fitBounds(bounds, { padding: [30, 30] });
+        }
+
+        siteCountEl.textContent = `${sites.length} site(s) plotted`;
+        updateAtAGlance(sites, usedNormalized);
+      }
+
+      async function main() {
+        try {
+          // Prefer normalized dist output (UTC-Z timestamps) when present.
+          let res = await fetch(NORMALIZED_URL, { cache: "no-store" });
+          let sites = [];
+          let usedNormalized = false;
+          if (res.ok) {
+            const payload = await res.json();
+            sites = parseNormalizedIso(payload);
+            usedNormalized = true;
+          } else {
+            res = await fetch(SNAPSHOT_URL, { cache: "no-store" });
+            if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${SNAPSHOT_URL}`);
+            const payload = await res.json();
+            sites = parseNwisSnapshot(payload);
+          }
+          renderSites(sites, usedNormalized);
+        } catch (err) {
+          console.error(err);
+          siteCountEl.textContent = "Load failed";
+          siteCountEl.title = String(err);
+        }
+      }
+
+      main();
+    </script>
+  </body>
+</html>

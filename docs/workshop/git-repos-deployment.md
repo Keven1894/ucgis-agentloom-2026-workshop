@@ -88,34 +88,38 @@ Already ignored by `.gitignore`:
 
 - `.venv/`, `venv/`
 - `.env`, `.env.local` (real API keys)
-- `private/` — local reference builds (organizer D1–D4 demos, screenshots, PROMPTS drafts)
-- `dist/` — build artifacts
+- `starter/` — **your** staged catalogs while building or demo staging copies. Never commit.
+- `dist/` — build artifacts (except intentional normalized outputs you choose to vendor)
+- `*.log`
 
-⚠️ **Not ignored — do not commit by reflex** (a blanket `git add -A` would stage these):
+⚠️ **Not ignored — do not commit by reflex**:
 
-- `starter/` — staged catalogs for the local showcase/demos. The committed repo keeps
-  `starter/` **empty** so attendees start from scratch. Stage with
-  `bash private/reference/serve_demo.sh`, and `serve_demo.sh clean` (or `rm -rf starter/`)
-  before committing.
-- `docs/plan/` — operator planning notes (todos, drafts). Organizer-only; keep out of commits
-  unless you intentionally want them public.
+- `docs/plan/` — operator planning notes (if present locally). Prefer keeping these outside the repo.
 
-Prefer `git add <explicit paths>` over `git add -A` so these don't sneak in.
+**Now public on `main`:**
+
+- `demo/reference/` — finished D1–D4 reference builds (catalog HTML, domain KG snapshots, PROMPTS drafts, screenshots). Attendees compare against these; they still build their own catalog in a separate fork checkout.
+
+Prefer `git add <explicit paths>` over `git add -A` so `starter/` doesn't sneak in.
+
+Stage demo catalogs locally with `bash demo/reference/serve_demo.sh stage` (or `bash demo/serve/serve-all.sh`).
+Clean with `bash demo/reference/serve_demo.sh clean`.
 
 ---
 
 ## 5. Keep the teaching closure intact
 
-The workshop's whole point is that attendees externalize knowledge themselves. So on public
-`main`:
+Attendees still **build their own catalog and propose their own domain KG nodes** in their fork.
+The public `demo/reference/` builds are for **comparison and browsing**, not a shortcut into
+`agents/knowledge-graphs/` or `starter/`.
 
-- **Domain KG stays root-only.** `test_mcp_kg_tools.py` asserts this. Do not commit accepted
-  domain nodes — attendees must have something to propose.
-- **No finished reference catalogs.** Organizer reference builds live under `private/`
-  (gitignored) and are shown only via the local showcase + dashboard `?ref=` overlay, never
-  committed into `starter/` or the committed KG.
-- **Rehearsal catalogs stay on personal/local branches** — do not merge them into public
-  `main`.
+On public `main`:
+
+- **Domain KG stays root-only** in `agents/knowledge-graphs/`. `test_mcp_kg_tools.py` asserts this.
+  Demo domain graphs live under `demo/reference/<id>/` and appear only via dashboard `?ref=` overlay.
+- **Do not commit `starter/`** — practice catalogs and demo staging stay local/gitignored.
+- **Rehearsal catalogs on personal branches** — do not merge attendee practice work into public
+  `main` unless intentionally curating showcase examples.
 
 ---
 

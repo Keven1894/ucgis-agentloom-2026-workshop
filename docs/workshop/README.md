@@ -11,6 +11,8 @@
 | 2 | [`02-quickstart.md`](./02-quickstart.md) | 5-min propose-review cycle (toy sample) |
 | 3 | [`03-data-source-menu.md`](./03-data-source-menu.md) | Pick D1–D4 for your catalog |
 | 4 | **Track B** Cline prompts (workshop day) — **one pack per dataset**: [D1](./04-attendee-prompt-pack-D1.md) · [D2](./04-attendee-prompt-pack-D2.md) · [D3 (default)](./04-attendee-prompt-pack.md) · [D4](./04-attendee-prompt-pack-D4.md) | Pick the pack matching your D1–D4 choice |
+| — | [`showcase.html`](./showcase.html) | Reference demo hub (needs `bash demo/serve/serve-all.sh`) |
+| — | [`demo/README.md`](../../demo/README.md) | Finished D1–D4 builds — compare your work |
 | — | [`06-slides.html`](./06-slides.html) | **Projector slides** (browser, ← → navigate) |
 | — | [`A5-cheat-sheet.html`](./A5-cheat-sheet.html) | **Print cheat sheet** (browser → Print) |
 | — | [`00-workshop-workflow.md`](./00-workshop-workflow.md) | Full A→G checklist (operators) |

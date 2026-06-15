@@ -118,7 +118,7 @@ async function setupReferenceMode() {
     const demo = (data.demos || []).find(d => d.id === REF_ID);
     const title = demo ? `${demo.label} — ${demo.title}` : REF_ID;
     banner.classList.add('show');
-    banner.innerHTML = `Reference demo KG snapshot: <strong>${escapeHtml(title)}</strong> — read-only overlay from <code>private/reference/${escapeHtml(REF_ID)}/</code> (workshop repo KG unchanged). <a href="${showcaseUrl()}">← All demos</a>`;
+    banner.innerHTML = `Reference demo KG snapshot: <strong>${escapeHtml(title)}</strong> — read-only overlay from <code>demo/reference/${escapeHtml(REF_ID)}/</code> (workshop repo KG unchanged). <a href="${showcaseUrl()}">← All demos</a>`;
     document.title = `KG — ${title}`;
   } catch {
     banner.classList.add('show');
@@ -148,7 +148,7 @@ async function loadGraph() {
   const url = REF_ID ? `/api/kg-data?ref=${encodeURIComponent(REF_ID)}` : '/api/kg-data';
   const r = await fetch(url);
   if (!r.ok) {
-    document.getElementById('cy').innerHTML = `<div style="padding:24px;color:#991b1b">Failed to load KG (${r.status}). ${REF_ID ? 'Reference build may be missing under private/reference/.' : ''}</div>`;
+    document.getElementById('cy').innerHTML = `<div style="padding:24px;color:#991b1b">Failed to load KG (${r.status}). ${REF_ID ? 'Reference build may be missing under demo/reference/.' : ''}</div>`;
     return;
   }
   const data = await r.json();

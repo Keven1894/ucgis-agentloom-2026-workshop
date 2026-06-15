@@ -1,0 +1,73 @@
+{
+  "graphType": "knowledge",
+  "role": "role-domain",
+  "project": "ucgis-agentloom-2026",
+  "version": "0.1.0",
+  "generatedAt": "2026-05-19",
+  "description": "REFERENCE KG after D4 Natural Earth catalog build.",
+  "nodes": [
+    {
+      "id": "knowledge:domain:root",
+      "type": "root",
+      "data": { "title": "Domain Knowledge Root", "description": "Root of the domain knowledge tree.", "category": "domain-meta" },
+      "relationships": {
+        "parent": null,
+        "children": [
+          "knowledge:domain:natural-earth-iso-property-names-hyphenated",
+          "knowledge:domain:natural-earth-is-basemap-not-event-stream",
+          "knowledge:domain:natural-earth-multipolygon-complexity",
+          "knowledge:domain:story-map-must-answer-four-viewer-questions"
+        ]
+      }
+    },
+    {
+      "id": "knowledge:domain:natural-earth-iso-property-names-hyphenated",
+      "type": "concept",
+      "data": {
+        "title": "Natural Earth ISO property names are hyphenated",
+        "description": "Use properties['ISO3166-1-Alpha-3'] and ['ISO3166-1-Alpha-2'] — not iso_a2 / ISO_A3 from older shapefiles.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/natural-earth-iso-property-names-hyphenated.md",
+        "tags": ["domain", "proposed"]
+      },
+      "relationships": { "parent": "knowledge:domain:root", "children": [] }
+    },
+    {
+      "id": "knowledge:domain:natural-earth-is-basemap-not-event-stream",
+      "type": "concept",
+      "data": {
+        "title": "Natural Earth is a basemap join layer not an event stream",
+        "description": "Admin 0 polygons provide context and join keys — catalog code joins other datasets to ISO/country, does not treat boundaries as sensor readings.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/natural-earth-is-basemap-not-event-stream.md",
+        "tags": ["domain", "proposed"]
+      },
+      "relationships": { "parent": "knowledge:domain:root", "children": [] }
+    },
+    {
+      "id": "knowledge:domain:natural-earth-multipolygon-complexity",
+      "type": "concept",
+      "data": {
+        "title": "Natural Earth MultiPolygon complexity",
+        "description": "Countries like Antarctica use MultiPolygon; Leaflet geoJSON handles both Polygon and MultiPolygon — expect large file size and slower first paint.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/natural-earth-multipolygon-complexity.md",
+        "tags": ["domain", "proposed"]
+      },
+      "relationships": { "parent": "knowledge:domain:root", "children": [] }
+    },
+    {
+      "id": "knowledge:domain:story-map-must-answer-four-viewer-questions",
+      "type": "concept",
+      "data": {
+        "title": "Story map must answer four viewer questions at a glance",
+        "description": "Plain-language: where from, what it is, how to reuse, what is on screen now.",
+        "category": "domain-proposed",
+        "path": "docs/domain/proposed/story-map-must-answer-four-viewer-questions.md",
+        "tags": ["domain", "proposed", "story-map"]
+      },
+      "relationships": { "parent": "knowledge:domain:root", "children": [] }
+    }
+  ],
+  "metadata": { "last_updated": "2026-06-14", "total_nodes": 5 }
+}

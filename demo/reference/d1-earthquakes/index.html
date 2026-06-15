@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>D1 Earthquake Catalog — USGS past week</title>
+
+    <!-- Leaflet 1.9.4 (unpkg) -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+
+    <style>
+      :root {
+        --topbar-h: 56px;
+        --sidebar-w: 420px;
+        --bg: #0b1220;
+        --panel: #0f1a33;
+        --text: #e7eefc;
+        --muted: #aab7d6;
+        --border: rgba(255, 255, 255, 0.12);
+        --link: #7cc4ff;
+        --quake: #ff9d5c;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
+          "Noto Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      a {
+        color: var(--link);
+      }
+
+      .topbar {
+        height: var(--topbar-h);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent);
+      }
+
+      .topbar h1 {
+        font-size: 16px;
+        margin: 0;
+        font-weight: 650;
+        letter-spacing: 0.2px;
+      }
+
+      .layout {
+        height: calc(100% - var(--topbar-h));
+        display: grid;
+        grid-template-columns: var(--sidebar-w) 1fr;
+      }
+
+      .sidebar {
+        overflow: auto;
+        border-right: 1px solid var(--border);
+        background: var(--panel);
+        padding: 12px;
+      }
+
+      .sidebar section {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 12px;
+        margin: 10px 0;
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .sidebar h2 {
+        margin: 0 0 8px;
+        font-size: 14px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar p,
+      .sidebar ul {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .sidebar ul {
+        padding-left: 18px;
+      }
+
+      .main {
+        position: relative;
+        min-width: 0;
+      }
+
+      /* data-view must contain a child, e.g. #map */
+      #map {
+        height: 100%;
+        width: 100%;
+      }
+
+      .badge {
+        font-size: 12px;
+        padding: 3px 8px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: var(--muted);
+      }
+
+      .at-a-glance {
+        border-color: rgba(124, 196, 255, 0.35);
+        background: rgba(124, 196, 255, 0.08);
+      }
+
+      .at-a-glance dl {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 6px 12px;
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .at-a-glance dt {
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .at-a-glance dd {
+        margin: 0;
+      }
+
+      .lay-lead {
+        font-size: 14px;
+        line-height: 1.5;
+        margin: 0 0 8px;
+      }
+    </style>
+
+    <!-- Schema.org Dataset JSON-LD (required) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Dataset",
+        "name": "USGS Earthquakes (D1) — all earthquakes, past 7 days",
+        "description": "Workshop catalog UI for the USGS real-time earthquake feed (all earthquakes, past week) as a GeoJSON FeatureCollection. Vendored snapshot; markers sized by magnitude over an interactive map.",
+        "url": "http://127.0.0.1:8000/",
+        "license": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+        "creator": {
+          "@type": "Organization",
+          "name": "U.S. Geological Survey (USGS) Earthquake Hazards Program"
+        },
+        "distribution": [
+          {
+            "@type": "DataDownload",
+            "name": "Vendored snapshot (workshop)",
+            "contentUrl": "data/snapshots/d1-usgs-earthquakes-week.geojson",
+            "encodingFormat": "application/geo+json"
+          },
+          {
+            "@type": "DataDownload",
+            "name": "USGS all_week GeoJSON feed",
+            "contentUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson",
+            "encodingFormat": "application/geo+json"
+          }
+        ],
+        "dateModified": "2026-06-14"
+      }
+    </script>
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>D1 Earthquake Catalog (USGS, past week)</h1>
+      <span id="quakeCount" class="badge">Loading…</span>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <section class="at-a-glance" id="at-a-glance" aria-label="At a glance summary">
+          <h2>At a glance</h2>
+          <dl>
+            <dt>Where from?</dt>
+            <dd id="agl-source">Loading…</dd>
+            <dt>What is it?</dt>
+            <dd id="agl-what">Loading…</dd>
+            <dt>How to use?</dt>
+            <dd id="agl-reuse">Loading…</dd>
+            <dt>On screen now</dt>
+            <dd id="agl-now">Loading…</dd>
+          </dl>
+        </section>
+
+        <section data-catalog-role="title">
+          <h2>Title</h2>
+          <p class="lay-lead">
+            <strong>Earthquakes of the past week</strong> — every event recorded by the
+            USGS global network, plotted on an interactive map and sized by magnitude.
+          </p>
+          <p>
+            Each orange circle is one earthquake; bigger, brighter circles are stronger
+            quakes. Click a circle or use the event list to see magnitude, depth, place,
+            and the time it occurred.
+          </p>
+        </section>
+
+        <section data-catalog-role="provenance">
+          <h2>Provenance</h2>
+          <p>
+            Data come from the
+            <a href="https://earthquake.usgs.gov/" rel="noopener">U.S. Geological Survey (USGS)</a>
+            Earthquake Hazards Program real-time feed "All Earthquakes, Past Week". This
+            workshop page uses a vendored GeoJSON snapshot so the demo works offline; the
+            live feed URL is in the JSON-LD block.
+          </p>
+          <p>
+            USGS earthquake parameters are preliminary and subject to revision. License and
+            credits:
+            <a href="https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits" rel="noopener">USGS copyright policy</a>.
+          </p>
+        </section>
+
+        <section data-catalog-role="acquisition">
+          <h2>Acquisition</h2>
+          <p>
+            Snapshot file: <code>d1-usgs-earthquakes-week.geojson</code> — a standard GeoJSON
+            <code>FeatureCollection</code> fetched once from the USGS summary feed and stored
+            under <code>data/snapshots/</code> for reproducible workshop builds.
+          </p>
+          <p>
+            Serve this page with a local static server (<code>python -m http.server</code>) —
+            browser security blocks <code>fetch()</code> on <code>file://</code> URLs.
+          </p>
+        </section>
+
+        <section data-catalog-role="data-shape">
+          <h2>Data shape</h2>
+          <p>
+            A GeoJSON FeatureCollection of point events. Each feature has
+            <code>geometry.coordinates = [longitude, latitude, depth_km]</code> (longitude
+            first) and properties including magnitude (<code>mag</code>), human-readable
+            <code>place</code>, and the event <code>time</code>.
+          </p>
+          <p class="muted" style="margin-top:8px;font-size:12px">
+            Technical: <code>properties.time</code> and <code>properties.updated</code> are
+            <strong>Unix epoch milliseconds</strong> (not seconds, not ISO 8601). Many
+            properties (<code>felt</code>, <code>cdi</code>, <code>mmi</code>,
+            <code>tsunami</code>, <code>alert</code>) are frequently <code>null</code>.
+          </p>
+        </section>
+
+        <section data-catalog-role="processing">
+          <h2>Processing</h2>
+          <p>
+            This page reads each feature's coordinates (padding 2-tuples to depth
+            <code>null</code>), converts the epoch-millisecond timestamp to a human-readable
+            UTC string, sizes each circle marker by magnitude, and tolerates null optional
+            fields. No magnitude filter is applied — every event in the snapshot is shown.
+          </p>
+        </section>
+
+        <section data-catalog-role="kg-link">
+          <h2>KG link</h2>
+          <ul>
+            <li>
+              Story map four viewer questions
+              <span class="badge">knowledge:domain:story-map-must-answer-four-viewer-questions</span>
+            </li>
+            <li>
+              USGS quake time is epoch milliseconds
+              <span class="badge">knowledge:domain:usgs-quake-time-is-epoch-milliseconds</span>
+            </li>
+            <li>
+              GeoJSON coordinates are lon, lat, depth
+              <span class="badge">knowledge:domain:usgs-quake-coords-are-lon-lat-depth</span>
+            </li>
+            <li>
+              USGS quake feed has many nullable fields
+              <span class="badge">knowledge:domain:usgs-quake-many-nullable-fields</span>
+            </li>
+          </ul>
+        </section>
+
+        <section data-catalog-role="reuse">
+          <h2>Reuse</h2>
+          <p>
+            Cite USGS as the data source. Example: "Earthquake data from the USGS Earthquake
+            Hazards Program real-time feed (all_week.geojson)." Earthquake parameters are
+            preliminary — confirm before publishing analysis or derivatives. Workshop
+            scaffolding — not a production seismic monitor.
+          </p>
+        </section>
+      </aside>
+
+      <main class="main">
+        <section data-catalog-role="data-view" style="height: 100%">
+          <div id="map" aria-label="Earthquake map"></div>
+        </section>
+      </main>
+    </div>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script>
+      const SNAPSHOT_URL = "../../data/snapshots/d1-usgs-earthquakes-week.geojson";
+
+      const quakeCountEl = document.getElementById("quakeCount");
+
+      // Base map: world view (used if no points parse).
+      const map = L.map("map", { zoomControl: true, worldCopyJump: true }).setView(
+        [20, 0],
+        2
+      );
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors"
+      }).addTo(map);
+
+      const markerLayer = L.layerGroup().addTo(map);
+
+      function toNumberMaybe(v) {
+        if (v === null || v === undefined) return null;
+        const n = Number(v);
+        return Number.isFinite(n) ? n : null;
+      }
+
+      function escapeHtml(s) {
+        return String(s)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      // KG: knowledge:domain:usgs-quake-time-is-epoch-milliseconds
+      // properties.time is epoch MS — divide is wrong; pass straight to Date(ms).
+      function epochMsToIso(ms) {
+        const n = toNumberMaybe(ms);
+        if (n === null) return null;
+        try {
+          return new Date(n).toISOString();
+        } catch {
+          return null;
+        }
+      }
+
+      // Marker radius grows with magnitude; clamp so M<=0 and huge M stay readable.
+      function radiusForMag(mag) {
+        const m = toNumberMaybe(mag);
+        if (m === null) return 4;
+        return Math.max(3, Math.min(18, 3 + m * 2.2));
+      }
+
+      function parseQuakeGeoJson(payload) {
+        const feats = payload?.features;
+        if (!Array.isArray(feats)) return [];
+
+        return feats
+          .map((f) => {
+            const geom = f?.geometry ?? {};
+            // KG: usgs-quake-coords-are-lon-lat-depth — [lon, lat, depth_km], pad to 3.
+            const coords = Array.isArray(geom.coordinates) ? geom.coordinates : [];
+            const lon = toNumberMaybe(coords[0]);
+            const lat = toNumberMaybe(coords[1]);
+            const depthKm = coords.length >= 3 ? toNumberMaybe(coords[2]) : null;
+            if (lon === null || lat === null) return null;
+
+            const p = f?.properties ?? {};
+            return {
+              id: f?.id ?? null,
+              lon,
+              lat,
+              depthKm,
+              mag: toNumberMaybe(p.mag),
+              magType: p.magType ?? null,
+              place: p.place ?? null,
+              timeIso: epochMsToIso(p.time),
+              updatedIso: epochMsToIso(p.updated),
+              // KG: usgs-quake-many-nullable-fields — these are often null.
+              felt: toNumberMaybe(p.felt),
+              tsunami: toNumberMaybe(p.tsunami),
+              alert: p.alert ?? null,
+              url: p.url ?? null
+            };
+          })
+          .filter(Boolean);
+      }
+
+      function buildPopupHtml(q) {
+        const magStr = q.mag === null ? "n/a" : `${q.mag.toFixed(1)} ${escapeHtml(q.magType ?? "")}`;
+        const depthStr = q.depthKm === null ? "n/a" : `${q.depthKm.toFixed(1)} km`;
+        const link = q.url
+          ? `<div><a href="${escapeHtml(q.url)}" target="_blank" rel="noopener">USGS event page</a></div>`
+          : "";
+        return `
+          <div style="min-width:240px">
+            <div><strong>Place</strong>: ${escapeHtml(q.place ?? "(unknown)")}</div>
+            <div><strong>Magnitude</strong>: ${magStr}</div>
+            <div><strong>Depth</strong>: ${depthStr}</div>
+            <div><strong>Time (UTC)</strong>: ${escapeHtml(q.timeIso ?? "n/a")}</div>
+            <div><strong>Tsunami flag</strong>: ${q.tsunami === null ? "n/a" : q.tsunami}</div>
+            ${link}
+          </div>
+        `;
+      }
+
+      function updateAtAGlance(quakes) {
+        const source = document.getElementById("agl-source");
+        const what = document.getElementById("agl-what");
+        const reuse = document.getElementById("agl-reuse");
+        const now = document.getElementById("agl-now");
+        if (!source) return;
+
+        source.textContent =
+          "U.S. Geological Survey Earthquake Hazards Program real-time feed (all_week), vendored workshop snapshot.";
+        what.textContent =
+          "Point earthquake events worldwide for the past 7 days: magnitude, depth (km), place, and origin time.";
+        reuse.textContent =
+          "Cite USGS; parameters are preliminary and subject to revision. Snapshot path in JSON-LD distribution.";
+
+        if (!quakes.length) {
+          now.textContent = "No events loaded — check static server and snapshot path.";
+          return;
+        }
+
+        const mags = quakes.map((q) => q.mag).filter((m) => m !== null);
+        const maxMag = mags.length ? Math.max(...mags) : null;
+        const times = quakes.map((q) => q.timeIso).filter(Boolean).sort();
+        const earliest = times[0] ?? "n/a";
+        const latest = times[times.length - 1] ?? "n/a";
+
+        now.textContent = `${quakes.length} earthquakes plotted. Largest magnitude: ${
+          maxMag === null ? "n/a" : maxMag.toFixed(1)
+        }. Origin times span ${earliest} → ${latest} (UTC).`;
+      }
+
+      function renderQuakes(quakes) {
+        markerLayer.clearLayers();
+
+        const bounds = [];
+        for (const q of quakes) {
+          const marker = L.circleMarker([q.lat, q.lon], {
+            radius: radiusForMag(q.mag),
+            color: "rgba(255,157,92,0.9)",
+            weight: 1,
+            fillColor: "rgba(255,157,92,0.55)",
+            fillOpacity: 0.7
+          })
+            .addTo(markerLayer)
+            .bindPopup(buildPopupHtml(q));
+          bounds.push([q.lat, q.lon]);
+          void marker;
+        }
+
+        if (bounds.length) {
+          map.fitBounds(bounds, { padding: [30, 30], maxZoom: 6 });
+        }
+
+        quakeCountEl.textContent = `${quakes.length} event(s) plotted`;
+        updateAtAGlance(quakes);
+      }
+
+      async function main() {
+        try {
+          const res = await fetch(SNAPSHOT_URL, { cache: "no-store" });
+          if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${SNAPSHOT_URL}`);
+          const payload = await res.json();
+          const quakes = parseQuakeGeoJson(payload);
+          renderQuakes(quakes);
+        } catch (err) {
+          console.error(err);
+          quakeCountEl.textContent = "Load failed";
+          quakeCountEl.title = String(err);
+        }
+      }
+
+      main();
+    </script>
+  </body>
+</html>

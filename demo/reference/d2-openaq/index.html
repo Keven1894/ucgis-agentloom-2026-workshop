@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>D2 OpenAQ Catalog — air quality locations</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <style>
+      :root { --topbar-h:56px; --sidebar-w:420px; --bg:#0b1220; --panel:#0f1a33; --text:#e7eefc; --muted:#aab7d6; --border:rgba(255,255,255,.12); --link:#7cc4ff; --aq:#5ec992; }
+      html,body{height:100%;margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--text)}
+      a{color:var(--link)}
+      .topbar{height:var(--topbar-h);display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border)}
+      .topbar h1{font-size:16px;margin:0;font-weight:650}
+      .layout{height:calc(100% - var(--topbar-h));display:grid;grid-template-columns:var(--sidebar-w) 1fr}
+      .sidebar{overflow:auto;border-right:1px solid var(--border);background:var(--panel);padding:12px}
+      .sidebar section{border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin:10px 0;background:rgba(255,255,255,.03)}
+      .sidebar h2{margin:0 0 8px;font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+      .sidebar p,.sidebar ul{margin:0;font-size:13px;line-height:1.4}
+      .sidebar ul{padding-left:18px}
+      #map{height:100%;width:100%}
+      .badge{font-size:12px;padding:3px 8px;border:1px solid var(--border);border-radius:999px;color:var(--muted)}
+      .at-a-glance{border-color:rgba(94,201,146,.35);background:rgba(94,201,146,.08)}
+      .at-a-glance dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 12px;margin:0;font-size:13px}
+      .at-a-glance dt{color:var(--muted);font-weight:600}
+      .at-a-glance dd{margin:0}
+      .lay-lead{font-size:14px;line-height:1.5;margin:0 0 8px}
+    </style>
+    <script type="application/ld+json">
+      {"@context":"https://schema.org","@type":"Dataset","name":"OpenAQ v3 locations (D2) — page 1 snapshot","description":"Workshop catalog UI for OpenAQ v3 air-quality monitoring locations (first page). Vendored snapshot; markers show station metadata and sensor parameter list — measurements require a second API call per location.","url":"http://127.0.0.1:8000/","license":"https://openaq.org/","creator":{"@type":"Organization","name":"OpenAQ"},"distribution":[{"@type":"DataDownload","name":"Vendored snapshot (workshop)","contentUrl":"data/snapshots/d2-openaq-locations-page1.json","encodingFormat":"application/json"},{"@type":"DataDownload","name":"OpenAQ v3 API","contentUrl":"https://api.openaq.org/v3/locations","encodingFormat":"application/json"}],"dateModified":"2026-06-14"}
+    </script>
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>D2 OpenAQ Catalog (locations page 1)</h1>
+      <span id="locCount" class="badge">Loading…</span>
+    </header>
+    <div class="layout">
+      <aside class="sidebar">
+        <section class="at-a-glance" id="at-a-glance">
+          <h2>At a glance</h2>
+          <dl>
+            <dt>Where from?</dt><dd id="agl-source">Loading…</dd>
+            <dt>What is it?</dt><dd id="agl-what">Loading…</dd>
+            <dt>How to use?</dt><dd id="agl-reuse">Loading…</dd>
+            <dt>On screen now</dt><dd id="agl-now">Loading…</dd>
+          </dl>
+        </section>
+        <section data-catalog-role="title">
+          <h2>Title</h2>
+          <p class="lay-lead"><strong>Global air-quality monitoring locations</strong> — OpenAQ v3 station registry, first page of results plotted on an interactive map.</p>
+          <p>Each green marker is one monitoring location. Click for country, sensors measured (PM2.5, PM10, etc.), and provider metadata. This snapshot is <strong>locations only</strong> — time-series measurements need a follow-up API call per <code>locationId</code>.</p>
+        </section>
+        <section data-catalog-role="provenance">
+          <h2>Provenance</h2>
+          <p>Data from <a href="https://openaq.org/" rel="noopener">OpenAQ</a> v3 API (<code>/v3/locations</code>). Workshop uses vendored page-1 JSON; live refresh requires an <code>X-API-Key</code> header. OpenAQ aggregates government and research air-quality networks worldwide.</p>
+        </section>
+        <section data-catalog-role="acquisition">
+          <h2>Acquisition</h2>
+          <p>Snapshot: <code>d2-openaq-locations-page1.json</code> — 100 locations from <code>GET /v3/locations?page=1&amp;limit=100</code>, stored under <code>data/snapshots/</code>. Serve via <code>python -m http.server</code> — not <code>file://</code>.</p>
+        </section>
+        <section data-catalog-role="data-shape">
+          <h2>Data shape</h2>
+          <p>Top-level <code>{ meta, results[] }</code>. Each result has <code>id</code>, <code>name</code>, nested <code>country</code>, <code>coordinates: { latitude, longitude }</code> (object, not GeoJSON array), and <code>sensors[]</code> listing parameters/units. <code>datetimeFirst</code>/<code>datetimeLast</code> may be null on locations-only responses.</p>
+        </section>
+        <section data-catalog-role="processing">
+          <h2>Processing</h2>
+          <p>Filters out rows where <code>coordinates</code> is null or incomplete. Plots markers at lat/lon from the coordinate object. Popups list sensor parameters; no measurements time series in this view (see accepted KG node on two-call join).</p>
+        </section>
+        <section data-catalog-role="kg-link">
+          <h2>KG link</h2>
+          <ul>
+            <li>Story map four viewer questions <span class="badge">knowledge:domain:story-map-must-answer-four-viewer-questions</span></li>
+            <li>OpenAQ coordinates are lat/lon object <span class="badge">knowledge:domain:openaq-coordinates-are-latitude-longitude-object</span></li>
+            <li>Locations then measurements two-call join <span class="badge">knowledge:domain:openaq-locations-then-measurements-two-call-join</span></li>
+            <li>Parameter units vary <span class="badge">knowledge:domain:openaq-parameter-units-vary</span></li>
+          </ul>
+        </section>
+        <section data-catalog-role="reuse">
+          <h2>Reuse</h2>
+          <p>Cite OpenAQ and the underlying data providers. Register for an API key at openaq.org for live data. This catalog shows location metadata only — do not treat sensor lists as measurements. Workshop scaffolding, not a production air-quality portal.</p>
+        </section>
+      </aside>
+      <main><section data-catalog-role="data-view" style="height:100%"><div id="map"></div></section></main>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+      const SNAPSHOT_URL = "../../data/snapshots/d2-openaq-locations-page1.json";
+      const locCountEl = document.getElementById("locCount");
+      const map = L.map("map").setView([20, 0], 2);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap" }).addTo(map);
+      const layer = L.layerGroup().addTo(map);
+
+      function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+      function parseLocations(payload){
+        const rows = payload?.results;
+        if(!Array.isArray(rows)) return [];
+        return rows.map(r=>{
+          const c = r?.coordinates;
+          const lat = c?.latitude != null ? Number(c.latitude) : null;
+          const lon = c?.longitude != null ? Number(c.longitude) : null;
+          if(!Number.isFinite(lat)||!Number.isFinite(lon)) return null;
+          const sensors = Array.isArray(r.sensors) ? r.sensors : [];
+          return { id:r.id, name:r.name, country:r.country?.name||r.country?.code, lat, lon, sensors };
+        }).filter(Boolean);
+      }
+
+      function popupHtml(loc){
+        const params = loc.sensors.map(s=>`${esc(s.parameter?.displayName||s.parameter?.name||"?")} (${esc(s.parameter?.units||"?")})`).join(", ")||"(none listed)";
+        return `<div style="min-width:220px"><div><strong>${esc(loc.name)}</strong></div><div>Country: ${esc(loc.country)}</div><div>Location ID: ${esc(loc.id)}</div><div>Sensors: ${params}</div><div style="margin-top:6px;font-size:11px;color:#666">Measurements need GET /v3/locations/{id}/measurements</div></div>`;
+      }
+
+      function updateAtAGlance(locs){
+        document.getElementById("agl-source").textContent = "OpenAQ v3 locations API, vendored workshop snapshot (page 1).";
+        document.getElementById("agl-what").textContent = "Air-quality monitoring station registry: where sensors are, which parameters they report (not time-series values in this file).";
+        document.getElementById("agl-reuse").textContent = "Cite OpenAQ; API key required for live refresh. See JSON-LD distribution.";
+        const countries = [...new Set(locs.map(l=>l.country).filter(Boolean))];
+        document.getElementById("agl-now").textContent = locs.length
+          ? `${locs.length} locations on map across ${countries.length} countries (sample: ${countries.slice(0,4).join(", ")}).`
+          : "No locations loaded.";
+      }
+
+      function render(locs){
+        layer.clearLayers();
+        const bounds = [];
+        for(const loc of locs){
+          const m = L.circleMarker([loc.lat,loc.lon],{radius:6,color:"rgba(94,201,146,.95)",fillColor:"rgba(94,201,146,.5)",fillOpacity:.75,weight:1}).addTo(layer).bindPopup(popupHtml(loc));
+          bounds.push([loc.lat,loc.lon]); void m;
+        }
+        if(bounds.length) map.fitBounds(bounds,{padding:[30,30],maxZoom:5});
+        locCountEl.textContent = `${locs.length} location(s)`;
+        updateAtAGlance(locs);
+      }
+
+      async function main(){
+        try{
+          const res = await fetch(SNAPSHOT_URL,{cache:"no-store"});
+          if(!res.ok) throw new Error(`HTTP ${res.status}`);
+          render(parseLocations(await res.json()));
+        }catch(e){ console.error(e); locCountEl.textContent="Load failed"; locCountEl.title=String(e); }
+      }
+      main();
+    </script>
+  </body>
+</html>

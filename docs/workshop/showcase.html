@@ -170,8 +170,8 @@
     </p>
     <div class="quote">
       Pick a dataset → explore foot-guns with the agent → externalize knowledge via propose-review →
-      build a FAIR web catalog. These are the <strong>organizer reference builds</strong> (local only;
-      attendee forks stay framework-only).
+      build a FAIR web catalog. These are the <strong>reference demo builds</strong> in
+      <code>demo/reference/</code> — compare your work against them; your fork still starts framework-only.
     </div>
   </header>
 
@@ -206,7 +206,7 @@
   </main>
 
   <footer>
-    Serve catalogs: <code>bash private/reference/serve_demo.sh</code> ·
+    Serve catalogs: <code>bash demo/reference/serve_demo.sh</code> ·
     Dashboard: <code>.venv/bin/python -m uvicorn server.dashboard.app:app --port 8000</code> ·
     KG links use <code>?ref=</code> overlays — no mutation of committed <code>*-graph.json</code>.
   </footer>
@@ -214,12 +214,12 @@
   <script>
     const DASHBOARD = 'http://127.0.0.1:8000';
 
-    // Screenshots live beside each reference build (private/reference/<id>/).
+    // Screenshots live beside each reference build (demo/reference/<id>/).
     const SCREENSHOTS = {
-      'd1-earthquakes': '../../private/reference/d1-earthquakes/D1-screen.png',
-      'd2-openaq': '../../private/reference/d2-openaq/d2-screen.png',
-      'd3-streamflow': '../../private/reference/d3-streamflow/d3-screen.png',
-      'd4-natural-earth': '../../private/reference/d4-natural-earth/d4-screen.png',
+      'd1-earthquakes': '../../demo/reference/d1-earthquakes/D1-screen.png',
+      'd2-openaq': '../../demo/reference/d2-openaq/d2-screen.png',
+      'd3-streamflow': '../../demo/reference/d3-streamflow/d3-screen.png',
+      'd4-natural-earth': '../../demo/reference/d4-natural-earth/d4-screen.png',
     };
 
     // Per-dataset narrative (what it is, why chosen, typical lesson). HTML allowed.
@@ -272,7 +272,7 @@
         <article class="card ${planned ? 'planned' : ''}">
           <div class="shot-wrap">
             ${img
-              ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(demo.title)} screenshot" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'shot-placeholder',textContent:'Screenshot missing — add private/reference/${escapeHtml(demo.id)}/dx-screen.png'}))">`
+              ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(demo.title)} screenshot" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'shot-placeholder',textContent:'Screenshot missing — add demo/reference/${escapeHtml(demo.id)}/ screenshot'}))">`
               : `<div class="shot-placeholder">Screenshot pending</div>`}
           </div>
           <div class="card-body">

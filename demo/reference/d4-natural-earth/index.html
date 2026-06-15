@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>D4 Natural Earth Catalog — country boundaries</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <style>
+      :root { --topbar-h:56px; --sidebar-w:420px; --bg:#0b1220; --panel:#0f1a33; --text:#e7eefc; --muted:#aab7d6; --border:rgba(255,255,255,.12); --link:#7cc4ff; --ne:#c4a574; }
+      html,body{height:100%;margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--text)}
+      a{color:var(--link)}
+      .topbar{height:var(--topbar-h);display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border)}
+      .topbar h1{font-size:16px;margin:0;font-weight:650}
+      .layout{height:calc(100% - var(--topbar-h));display:grid;grid-template-columns:var(--sidebar-w) 1fr}
+      .sidebar{overflow:auto;border-right:1px solid var(--border);background:var(--panel);padding:12px}
+      .sidebar section{border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin:10px 0;background:rgba(255,255,255,.03)}
+      .sidebar h2{margin:0 0 8px;font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+      .sidebar p,.sidebar ul{margin:0;font-size:13px;line-height:1.4}
+      .sidebar ul{padding-left:18px}
+      #map{height:100%;width:100%}
+      .badge{font-size:12px;padding:3px 8px;border:1px solid var(--border);border-radius:999px;color:var(--muted)}
+      .at-a-glance{border-color:rgba(196,165,116,.35);background:rgba(196,165,116,.08)}
+      .at-a-glance dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 12px;margin:0;font-size:13px}
+      .at-a-glance dt{color:var(--muted);font-weight:600}
+      .at-a-glance dd{margin:0}
+      .lay-lead{font-size:14px;line-height:1.5;margin:0 0 8px}
+    </style>
+    <script type="application/ld+json">
+      {"@context":"https://schema.org","@type":"Dataset","name":"Natural Earth Admin 0 countries (D4)","description":"Workshop catalog UI for Natural Earth 1:10m country boundaries (Admin 0). Polygon choropleth basemap for spatial joins — not a point-event feed.","url":"http://127.0.0.1:8000/","license":"https://www.naturalearthdata.com/about/terms-of-use/","creator":{"@type":"Organization","name":"Natural Earth"},"distribution":[{"@type":"DataDownload","name":"Vendored snapshot (workshop)","contentUrl":"data/snapshots/d4-natural-earth-admin0.geojson","encodingFormat":"application/geo+json"},{"@type":"DataDownload","name":"Natural Earth downloads","contentUrl":"https://www.naturalearthdata.com/downloads/","encodingFormat":"application/geo+json"}],"dateModified":"2026-06-14"}
+    </script>
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>D4 Natural Earth Catalog (Admin 0 countries)</h1>
+      <span id="featCount" class="badge">Loading…</span>
+    </header>
+    <div class="layout">
+      <aside class="sidebar">
+        <section class="at-a-glance" id="at-a-glance">
+          <h2>At a glance</h2>
+          <dl>
+            <dt>Where from?</dt><dd id="agl-source">Loading…</dd>
+            <dt>What is it?</dt><dd id="agl-what">Loading…</dd>
+            <dt>How to use?</dt><dd id="agl-reuse">Loading…</dd>
+            <dt>On screen now</dt><dd id="agl-now">Loading…</dd>
+          </dl>
+        </section>
+        <section data-catalog-role="title">
+          <h2>Title</h2>
+          <p class="lay-lead"><strong>World country boundaries</strong> — Natural Earth Admin 0 polygons at 1:10m scale, rendered as a choropleth basemap for exploration and join keys.</p>
+          <p>Click a country for name and ISO codes. This layer is a <strong>reference basemap</strong> — workshop catalogs join events or stations to these polygons; they do not ingest boundary geometry as if it were sensor readings.</p>
+        </section>
+        <section data-catalog-role="provenance">
+          <h2>Provenance</h2>
+          <p><a href="https://www.naturalearthdata.com/" rel="noopener">Natural Earth</a> public domain cartographic data. Snapshot: <code>ne_10m_admin_0_countries</code> subset vendored as GeoJSON (~258 features, MultiPolygon/Polygon mix).</p>
+        </section>
+        <section data-catalog-role="acquisition">
+          <h2>Acquisition</h2>
+          <p>Vendored file <code>d4-natural-earth-admin0.geojson</code> under <code>data/snapshots/</code>. Large (~15 MB) — load once via fetch; serve with HTTP not <code>file://</code>.</p>
+        </section>
+        <section data-catalog-role="data-shape">
+          <h2>Data shape</h2>
+          <p>GeoJSON FeatureCollection. Properties use hyphenated ISO keys: <code>ISO3166-1-Alpha-3</code>, <code>ISO3166-1-Alpha-2</code>, plus <code>name</code> — not legacy <code>iso_a2</code>. Geometries are Polygon or MultiPolygon (Antarctica is complex).</p>
+        </section>
+        <section data-catalog-role="processing">
+          <h2>Processing</h2>
+          <p><code>L.geoJSON</code> with semi-transparent fill; popups show name + ISO codes from hyphenated property names. Fit map to layer bounds after load. No simplification in-browser (workshop snapshot already generalised).</p>
+        </section>
+        <section data-catalog-role="kg-link">
+          <h2>KG link</h2>
+          <ul>
+            <li>Story map four viewer questions <span class="badge">knowledge:domain:story-map-must-answer-four-viewer-questions</span></li>
+            <li>ISO property names are hyphenated <span class="badge">knowledge:domain:natural-earth-iso-property-names-hyphenated</span></li>
+            <li>Basemap join layer not event stream <span class="badge">knowledge:domain:natural-earth-is-basemap-not-event-stream</span></li>
+            <li>MultiPolygon complexity <span class="badge">knowledge:domain:natural-earth-multipolygon-complexity</span></li>
+          </ul>
+        </section>
+        <section data-catalog-role="reuse">
+          <h2>Reuse</h2>
+          <p>Natural Earth terms apply; cite Natural Earth and the scale (1:10m). Use ISO Alpha-3 for joins to other datasets. Suitable for workshop choropleth demos — not for legal boundary disputes or high-precision cadastre.</p>
+        </section>
+      </aside>
+      <main><section data-catalog-role="data-view" style="height:100%"><div id="map"></div></section></main>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+      const SNAPSHOT_URL = "../../data/snapshots/d4-natural-earth-admin0.geojson";
+      const featCountEl = document.getElementById("featCount");
+      const map = L.map("map").setView([20, 0], 2);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap" }).addTo(map);
+      let geoLayer = null;
+
+      function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+      function propsOf(f){
+        const p = f?.properties || {};
+        return {
+          name: p.name || "(unnamed)",
+          a3: p["ISO3166-1-Alpha-3"] || p.ISO_A3 || "—",
+          a2: p["ISO3166-1-Alpha-2"] || p.ISO_A2 || "—",
+          geom: f?.geometry?.type || "?"
+        };
+      }
+
+      function styleFeature(){ return { color:"rgba(196,165,116,.85)", weight:1, fillColor:"rgba(196,165,116,.25)", fillOpacity:.45 }; }
+
+      function onEachFeature(feature, layer){
+        const pr = propsOf(feature);
+        layer.bindPopup(`<div style="min-width:180px"><strong>${esc(pr.name)}</strong><br/>ISO Alpha-3: ${esc(pr.a3)}<br/>ISO Alpha-2: ${esc(pr.a2)}<br/>Geometry: ${esc(pr.geom)}</div>`);
+      }
+
+      function updateAtAGlance(features){
+        document.getElementById("agl-source").textContent = "Natural Earth 1:10m Admin 0 countries, vendored GeoJSON snapshot.";
+        document.getElementById("agl-what").textContent = "Country boundary polygons for basemap display and ISO-key spatial joins — not time-series events.";
+        document.getElementById("agl-reuse").textContent = "Public domain with attribution; use ISO3166-1-Alpha-3 for joins. See JSON-LD.";
+        const mp = features.filter(f=>f.geometry?.type==="MultiPolygon").length;
+        document.getElementById("agl-now").textContent = features.length
+          ? `${features.length} countries rendered (${mp} MultiPolygon). Click a country for ISO codes.`
+          : "No features loaded.";
+      }
+
+      async function main(){
+        try{
+          featCountEl.textContent = "Fetching (~15 MB)…";
+          const res = await fetch(SNAPSHOT_URL,{cache:"no-store"});
+          if(!res.ok) throw new Error(`HTTP ${res.status}`);
+          const gj = await res.json();
+          const features = Array.isArray(gj.features) ? gj.features : [];
+          if(geoLayer) map.removeLayer(geoLayer);
+          geoLayer = L.geoJSON(gj, { style: styleFeature, onEachFeature }).addTo(map);
+          if(geoLayer.getBounds().isValid()) map.fitBounds(geoLayer.getBounds(), { padding:[20,20] });
+          featCountEl.textContent = `${features.length} countr${features.length===1?"y":"ies"}`;
+          updateAtAGlance(features);
+        }catch(e){ console.error(e); featCountEl.textContent="Load failed"; featCountEl.title=String(e); }
+      }
+      main();
+    </script>
+  </body>
+</html>
