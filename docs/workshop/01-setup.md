@@ -215,7 +215,9 @@ Optional cheat sheet: open [`welcome.html`](./welcome.html) in a browser tab.
 .venv\Scripts\python scripts\kg\validate_all.py
 .venv\Scripts\python scripts\validators\run_all.py
 
-# macOS/Linux — same with .venv/bin/python
+# macOS/Linux
+.venv/bin/python scripts/kg/validate_all.py
+.venv/bin/python scripts/validators/run_all.py
 ```
 
 **Pass**: all schema + integrity + Tier-A behavior validators succeed (8/8).
