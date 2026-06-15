@@ -4,6 +4,9 @@
 **Audience**: attendees + lecturer  
 **Use with**: [`03-data-source-menu.md`](./03-data-source-menu.md) · Cline Act mode · gpt-5.2 @ 0.2
 
+> **This is the D3 (streamflow) pack — the default.** Working a different dataset? Use its sibling pack, same flow:
+> [D1 Earthquakes](./04-attendee-prompt-pack-D1.md) · [D2 OpenAQ](./04-attendee-prompt-pack-D2.md) · **D3 Streamflow (this file)** · [D4 Natural Earth](./04-attendee-prompt-pack-D4.md)
+
 ---
 
 ## Track A vs Track B vs Track C

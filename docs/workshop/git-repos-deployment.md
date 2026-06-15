@@ -1,182 +1,152 @@
-# Git repos — usage & deployment (operator runbook)
+# Git repo — usage & deployment (operator runbook)
 
-**Last updated**: 2026-05-31  
-**Audience**: organizers (Keven + team) — not attendees  
-**Status**: source of truth for **clone, push, snapshot, and tag** workflows  
-**Related**: [`13-hosting-three-repos-and-dual-origin.md`](../../../envistor-data/docs/research/workshop-ucgis-2026/13-hosting-three-repos-and-dual-origin.md) (envistor copy)
+**Last updated**: 2026-06-14
+**Audience**: organizers (Keven + team) — not attendees
+**Status**: source of truth for **clone, edit, push, and tag** of the workshop repo
 
 ---
 
-## 1. Three repos at a glance
+## 1. The repo
 
 | Repo | Host | Who clones | Upstream for PRs |
 | --- | --- | --- | --- |
-| **ucgis-agentloom-2026** | Gitea `origin` + Bitbucket `backup` | FIU team only | — |
-| **ucgis-agentloom-2026-workshop** | GitHub public | Attendees + friend test | `Keven1894/ucgis-agentloom-2026-workshop` |
-| **AgentLoom** | GitHub public | Paper readers / framework adopters | `Keven1894/AgentLoom` |
+| **ucgis-agentloom-2026-workshop** | GitHub (public) | Organizers + attendees | `Keven1894/ucgis-agentloom-2026-workshop` |
 
-**Golden rule**: workshop repo is **derived**. Never fix attendee-facing bugs only on GitHub — patch **dev `main` first**, then re-snapshot.
+There is **one** workshop repo. We edit a local clone and push directly to GitHub `main`.
+Attendees fork that GitHub repo. There is **no separate dev/source repo and no snapshot
+build step** — what is on GitHub `main` is what attendees get.
+
+> The AgentLoom framework itself lives in its own public repos
+> (`Keven1894/AgentLoom`, `Keven1894/agentloom-runtime`); those are managed separately and
+> are out of scope for this runbook.
 
 ---
 
-## 2. Dev repo — daily work
+## 2. Daily work (organizers)
 
-### 2.1 Clone (team)
+### 2.1 Clone
 
 ```bash
-git clone https://dpanther04devtemp.fiu.edu/gitea/fiugiscenter/ucgis-agentloom-2026.git
-cd ucgis-agentloom-2026
-git remote add backup https://bitbucket.org/fiugiscenter/ucgis-agentloom-2026.git   # if missing
+git clone https://github.com/Keven1894/ucgis-agentloom-2026-workshop.git
+cd ucgis-agentloom-2026-workshop
+
+# macOS/Linux
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+
+# Windows
 python -m venv .venv
-.venv/Scripts/pip install -r requirements.txt   # Windows
+.venv\Scripts\pip install -r requirements.txt
 ```
 
-Local path (operator): `C:\projects\ucgis-agentloom-2026`
+Local path (this machine): `~/Documents/projs/01_agentloom/ucgis-agentloom-2026-workshop`
 
-### 2.2 Push both remotes
+### 2.2 Edit → commit → push
+
+Changes to attendee-facing docs/scripts go straight onto `main`:
 
 ```bash
-git push origin <branch>
-git push backup <branch>
+git add <files>
+git commit -m "<message>"
+git push origin main
 ```
 
-Branches: `main`, `d1`–`d4`, `feature/*`, experiment branches.
+Use feature branches for larger or in-progress work, then merge to `main` when ready.
 
-### 2.3 Tags (traceability)
+### 2.3 Tags (optional, for traceability)
 
-After a workshop snapshot ships, tag dev at the source commit:
+Tag milestones so you can point friend-testers / attendees at a known-good state:
 
 ```bash
-git tag workshop-day-rc2 <short-sha>    # e.g. 429aeeb
-git push origin workshop-day-rc2
-git push backup workshop-day-rc2
+git tag workshop-day-2026-06-15
+git push origin workshop-day-2026-06-15
 ```
-
-Final workshop tag: `workshop-day-2026-06-15` on dev + GitHub workshop `main`.
 
 ---
 
-## 3. Workshop repo — snapshot & publish
-
-### 3.1 When to snapshot
-
-| Trigger | Action |
-| --- | --- |
-| Doc/script fix on dev `main` that attendees need | Re-snapshot → push GitHub `main` |
-| Named milestone | Tag `workshop-day-rc1`, `rc2`, … |
-| Workshop eve | Tag `workshop-day-2026-06-15` |
-
-**Cadence**: ~Jun 7–10 RC2 (done 2026-05-31), final snapshot ~Jun 13–14.
-
-### 3.2 Build snapshot (Windows)
-
-Output directory **must not exist**. `make` is optional — validate with Python if `make` unavailable.
+## 3. Attendee flow (what we tell them)
 
 ```bash
-cd C:\projects\ucgis-agentloom-2026
-
-# 1. Build to a fresh temp dir
-.venv\Scripts\python scripts\build_workshop_snapshot.py --ref main --output C:\Users\<you>\AppData\Local\Temp\ws-snapshot-out
-
-# 2. Validate (no make required)
-cd C:\Users\<you>\AppData\Local\Temp\ws-snapshot-out
-C:\projects\ucgis-agentloom-2026\.venv\Scripts\python scripts\validators\run_all.py
-C:\projects\ucgis-agentloom-2026\.venv\Scripts\python scripts\kg\validate_all.py
-```
-
-**Excluded from snapshot** (by `build_workshop_snapshot.py`):
-
-- `docs/plan/`, `docs/research/`, `runs/`, `starter/`, `scripts/domain/`
-- Pending proposals (`agents/knowledge-graphs/proposals/*.json`)
-- Operator-only docs: `W7-dress-rehearsal-runbook.md`, `dress-rehearsal-2026-05-31.md`
-
-### 3.3 Publish to GitHub (recommended: fresh clone)
-
-Avoid syncing into a tree with a live `.venv` (Windows file locks). Use a clean publish clone:
-
-```bash
-git clone --branch main https://github.com/Keven1894/ucgis-agentloom-2026-workshop.git C:\Temp\ws-publish
-cd C:\Temp\ws-publish
-
-# Replace all files except .git with snapshot tree (Python one-liner or manual copy)
-# Write WORKSHOP-SNAPSHOT.txt:
-#   source_repo=ucgis-agentloom-2026
-#   source_ref=<dev-short-sha>
-#   snapshot_tag=workshop-day-rc2
-
-git add -A
-git commit -m "Workshop snapshot RC2 from dev main @ <sha>"
-git tag workshop-day-rc2
-git push origin main
-git push origin workshop-day-rc2
-```
-
-**Live URLs**
-
-- Workshop: https://github.com/Keven1894/ucgis-agentloom-2026-workshop  
-- Latest RC: tag **`workshop-day-rc4`** (2026-06-02, dev `@36948f2` + URL-paired slides) — includes Track B prompt pack (5b/5c), slides HTML, A5, verify script
-
-### 3.4 Attendee clone (what we tell them)
-
-```bash
+# 1. Fork on GitHub: Keven1894/ucgis-agentloom-2026-workshop
+# 2. Clone YOUR fork
 git clone https://github.com/<their-handle>/ucgis-agentloom-2026-workshop.git
 cd ucgis-agentloom-2026-workshop
 git checkout -b workshop-<handle>
 ```
 
-Fork first on GitHub; PR upstream = `Keven1894/ucgis-agentloom-2026-workshop`.
+PRs go upstream to `Keven1894/ucgis-agentloom-2026-workshop`.
 
-### 3.5 Operator rehearsal branches
-
-Organizer dry-runs (e.g. `workshop-keven-w7`) are **personal branches** on a fork or local clone. Do **not** merge rehearsal catalogs into public `main`. Evidence stays on the rehearsal branch for paper / friction logs.
-
----
-
-## 4. AgentLoom repo (paper P5)
-
-Framework IP lives at `Keven1894/AgentLoom`. Sync from dev `main` before SoftwareX submission (~Jun 7):
-
-1. Copy builder agent package, validators, `.clinerules` discipline docs  
-2. Tag `v3.0-ucgis` (pre-workshop) / `v4.0` (post-workshop)  
-3. GitHub Release → Zenodo DOI  
-
-Details: paper track [`docs/plan/todo/2026-05-23-paper-track.md`](../plan/todo/2026-05-23-paper-track.md) P5.
+**Framework-only**: the attendee fork ships the framework, **not** finished catalogs or a
+pre-filled domain KG. Attendees build their own catalog and propose their own KG nodes. Keep
+it that way — see §5.
 
 ---
 
-## 5. Cline MCP config (global, not in repo)
+## 4. What never goes in git
 
-Cline stores MCP at:
+Already ignored by `.gitignore`:
+
+- `.venv/`, `venv/`
+- `.env`, `.env.local` (real API keys)
+- `private/` — local reference builds (organizer D1–D4 demos, screenshots, PROMPTS drafts)
+- `dist/` — build artifacts
+
+⚠️ **Not ignored — do not commit by reflex** (a blanket `git add -A` would stage these):
+
+- `starter/` — staged catalogs for the local showcase/demos. The committed repo keeps
+  `starter/` **empty** so attendees start from scratch. Stage with
+  `bash private/reference/serve_demo.sh`, and `serve_demo.sh clean` (or `rm -rf starter/`)
+  before committing.
+- `docs/plan/` — operator planning notes (todos, drafts). Organizer-only; keep out of commits
+  unless you intentionally want them public.
+
+Prefer `git add <explicit paths>` over `git add -A` so these don't sneak in.
+
+---
+
+## 5. Keep the teaching closure intact
+
+The workshop's whole point is that attendees externalize knowledge themselves. So on public
+`main`:
+
+- **Domain KG stays root-only.** `test_mcp_kg_tools.py` asserts this. Do not commit accepted
+  domain nodes — attendees must have something to propose.
+- **No finished reference catalogs.** Organizer reference builds live under `private/`
+  (gitignored) and are shown only via the local showcase + dashboard `?ref=` overlay, never
+  committed into `starter/` or the committed KG.
+- **Rehearsal catalogs stay on personal/local branches** — do not merge them into public
+  `main`.
+
+---
+
+## 6. Cline MCP config (global, not in repo)
+
+Cline stores MCP server config **outside** the repo, globally:
 
 ```text
+# macOS/Linux
+~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json
+
+# Windows
 %APPDATA%\Code\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json
 ```
 
-**Must point at the clone you have open** — `.venv/Scripts/python.exe` + `scripts/mcp_kg_server.py` paths. Switch when changing forks. Documented in [`01-setup.md`](./01-setup.md) Step 5b.
+It must point at the clone you have open (`.venv` python + `scripts/mcp_kg_server.py` paths).
+Update it when you switch clones/forks. See [`01-setup.md`](./01-setup.md) Step 5b.
 
 ---
 
-## 6. Checklist — snapshot release
+## 7. Release checklist
 
 | Step | Done? |
 | --- | --- |
-| Dev `main` validators green | ☐ |
-| `build_workshop_snapshot.py --ref main` → temp dir | ☐ |
-| `run_all.py` + `validate_all.py` PASS on snapshot | ☐ |
-| `WORKSHOP-SNAPSHOT.txt` records dev SHA + tag | ☐ |
-| Push GitHub workshop `main` | ☐ |
-| Tag `workshop-day-rcN` on GitHub + dev | ☐ |
+| `starter/` empty, `docs/plan/` not staged | ☐ |
+| Validators green: `.venv/bin/python scripts/validators/run_all.py` | ☐ |
+| KG check: `.venv/bin/python scripts/kg/validate_all.py` | ☐ |
+| Commit + push GitHub `main` | ☐ |
+| (optional) Tag the milestone on GitHub | ☐ |
 | Smoke: fresh clone + `test_mcp_kg_tools.py` PASS | ☐ |
-| Announce tag in team channel / W8 friend test brief | ☐ |
-
----
-
-## 7. What never goes in git
-
-- `.env` with real API keys  
-- `dist/` build artifacts (gitignored)  
-- Attendee rehearsal catalogs on public `main`  
-- Eval transcripts / pending proposals (stripped by snapshot script)
+| Announce to team / friend-test brief | ☐ |
 
 ---
 
@@ -186,5 +156,4 @@ Cline stores MCP at:
 | --- | --- |
 | [`01-setup.md`](./01-setup.md) | Attendee bootstrap |
 | [`00-workshop-workflow.md`](./00-workshop-workflow.md) | Phases A–F |
-| [`scripts/build_workshop_snapshot.py`](../../scripts/build_workshop_snapshot.py) | Snapshot implementation |
-| envistor [`13-hosting-three-repos-and-dual-origin.md`](../../../envistor-data/docs/research/workshop-ucgis-2026/13-hosting-three-repos-and-dual-origin.md) | Hosting decisions |
+| [`README.md`](./README.md) | Doc index |

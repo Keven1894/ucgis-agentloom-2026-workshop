@@ -10,17 +10,17 @@
 | 1 | [`01-setup.md`](./01-setup.md) | `.venv`, Cline, MCP, dashboard, validators |
 | 2 | [`02-quickstart.md`](./02-quickstart.md) | 5-min propose-review cycle (toy sample) |
 | 3 | [`03-data-source-menu.md`](./03-data-source-menu.md) | Pick D1–D4 for your catalog |
-| 4 | [`04-attendee-prompt-pack.md`](./04-attendee-prompt-pack.md) | **Track B** Cline prompts (workshop day) |
+| 4 | **Track B** Cline prompts (workshop day) — **one pack per dataset**: [D1](./04-attendee-prompt-pack-D1.md) · [D2](./04-attendee-prompt-pack-D2.md) · [D3 (default)](./04-attendee-prompt-pack.md) · [D4](./04-attendee-prompt-pack-D4.md) | Pick the pack matching your D1–D4 choice |
 | — | [`06-slides.html`](./06-slides.html) | **Projector slides** (browser, ← → navigate) |
 | — | [`A5-cheat-sheet.html`](./A5-cheat-sheet.html) | **Print cheat sheet** (browser → Print) |
 | — | [`00-workshop-workflow.md`](./00-workshop-workflow.md) | Full A→G checklist (operators) |
 | — | [`welcome.html`](./welcome.html) | Browser cheat sheet |
 
-## Operators (not in public snapshot)
+## Operators (organizer-only — keep out of commits)
 
 | Doc | Purpose |
 | --- | --- |
-| [`git-repos-deployment.md`](./git-repos-deployment.md) | Clone, snapshot, push, tags |
+| [`git-repos-deployment.md`](./git-repos-deployment.md) | Clone, edit, push, tags (single GitHub repo) |
 | [`06-slides-outline-draft.md`](./06-slides-outline-draft.md) | W6 slides draft for review |
 | [`06-slides.html`](./06-slides.html) | W6 projector slides (HTML) |
 | [`A5-cheat-sheet.html`](./A5-cheat-sheet.html) | Print cheat sheet |

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UCGIS 2026 — AgentLoom Reference Demos</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --card: #1a2332;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --green: #3fb950;
+      --border: #30363d;
+      --warn: #e8a838;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      padding: 2rem 1.5rem 1rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    header h1 { margin: 0 0 0.35rem; font-size: 1.75rem; }
+    header p { margin: 0; color: var(--muted); max-width: 720px; }
+    .quote {
+      margin: 1.25rem 0 0;
+      padding: 0.85rem 1rem;
+      border-left: 4px solid var(--accent);
+      background: var(--card);
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+    }
+    main { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+    .section-title {
+      margin: 2.25rem 0 0.4rem;
+      font-size: 1.25rem;
+    }
+    .section-lead {
+      margin: 0 0 1.25rem;
+      color: var(--muted);
+      max-width: 760px;
+    }
+    .why {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem 1.25rem;
+      margin: 0 0 1.5rem;
+    }
+    .why h3 { margin: 0 0 0.5rem; font-size: 1rem; }
+    .why ul { margin: 0; padding-left: 1.1rem; }
+    .why li { margin: 0.3rem 0; }
+    .why li strong { color: var(--text); }
+    .grid {
+      display: grid;
+      gap: 1.25rem;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (max-width: 720px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .card.planned { opacity: 0.72; }
+    .shot-wrap {
+      aspect-ratio: 16 / 10;
+      background: #010409;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .shot-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+    .shot-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 1rem;
+      text-align: center;
+    }
+    .card-body { padding: 1rem 1.1rem 1.15rem; flex: 1; display: flex; flex-direction: column; }
+    .label {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+    .card h2 { margin: 0 0 0.25rem; font-size: 1.05rem; }
+    .subtitle { color: var(--muted); font-size: 0.85rem; margin: 0 0 0.6rem; }
+    .blurb { font-size: 0.9rem; margin: 0 0 0.5rem; }
+    .why-pick { color: var(--muted); font-size: 0.85rem; margin: 0 0 0.6rem; }
+    .why-pick strong { color: var(--text); }
+    .lesson {
+      display: inline-block;
+      margin: 0 0 0.85rem;
+      font-size: 0.78rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(88,166,255,0.12);
+      color: var(--accent);
+      border: 1px solid rgba(88,166,255,0.35);
+    }
+    .status {
+      font-size: 0.75rem;
+      margin-bottom: 0.85rem;
+    }
+    .status.ready { color: var(--green); }
+    .status.planned { color: var(--warn); }
+    .actions { display: flex; gap: 0.5rem; margin-top: auto; flex-wrap: wrap; }
+    a.btn {
+      display: inline-block;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      border: 1px solid transparent;
+    }
+    a.btn.primary { background: var(--accent); color: #0d1117; }
+    a.btn.secondary { background: transparent; color: var(--accent); border-color: var(--accent); }
+    a.btn.disabled {
+      pointer-events: none;
+      opacity: 0.45;
+      background: #21262d;
+      color: var(--muted);
+      border-color: var(--border);
+    }
+    footer {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem 2rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AgentLoom × UCGIS — Reference Demos</h1>
+    <p>
+      Four heterogeneous data sources, four validators-green catalogs, four domain KG snapshots.
+      Models are uncertain; the <strong>knowledge layer + validators</strong> are what converge everyone
+      toward the same outcome.
+    </p>
+    <div class="quote">
+      Pick a dataset → explore foot-guns with the agent → externalize knowledge via propose-review →
+      build a FAIR web catalog. These are the <strong>organizer reference builds</strong> (local only;
+      attendee forks stay framework-only).
+    </div>
+  </header>
+
+  <main>
+    <h2 class="section-title">Why these four datasets?</h2>
+    <p class="section-lead">
+      Geospatial data does not arrive in one shape. We deliberately picked four <strong>heterogeneous</strong>
+      sources so the same protocol — discover foot-guns → externalize knowledge → build a FAIR catalog —
+      has to survive different geometries, encodings, and auth models. If the loop works across all four,
+      it works for the source an attendee brings tomorrow.
+    </p>
+
+    <div class="why">
+      <h3>Selection principles</h3>
+      <ul>
+        <li><strong>Span the geometry spectrum</strong> — point events, point + time series, and polygons,
+          so attendees meet both feature ingestion and basemap/join thinking.</li>
+        <li><strong>Vary the failure modes</strong> — each source carries a different "foot-gun" (epoch-ms time,
+          two-call joins, sentinel values, hyphenated ISO keys) that only surfaces when you actually read the data.</li>
+        <li><strong>Mix auth and access</strong> — three keyless feeds plus one API-key source (OpenAQ), so the
+          credential story gets rehearsed without blocking everyone.</li>
+        <li><strong>Public, citable, FAIR-friendly</strong> — all are open, well-documented, and reusable, which
+          makes them honest examples for a catalog about findability and reuse.</li>
+        <li><strong>Vendored snapshots</strong> — each ships an offline snapshot so the workshop runs even when the
+          network or a live API does not.</li>
+      </ul>
+    </div>
+
+    <div class="grid" id="demo-grid">
+      <p style="color:var(--muted)">Loading demos…</p>
+    </div>
+  </main>
+
+  <footer>
+    Serve catalogs: <code>bash private/reference/serve_demo.sh</code> ·
+    Dashboard: <code>.venv/bin/python -m uvicorn server.dashboard.app:app --port 8000</code> ·
+    KG links use <code>?ref=</code> overlays — no mutation of committed <code>*-graph.json</code>.
+  </footer>
+
+  <script>
+    const DASHBOARD = 'http://127.0.0.1:8000';
+
+    // Screenshots live beside each reference build (private/reference/<id>/).
+    const SCREENSHOTS = {
+      'd1-earthquakes': '../../private/reference/d1-earthquakes/D1-screen.png',
+      'd2-openaq': '../../private/reference/d2-openaq/d2-screen.png',
+      'd3-streamflow': '../../private/reference/d3-streamflow/d3-screen.png',
+      'd4-natural-earth': '../../private/reference/d4-natural-earth/d4-screen.png',
+    };
+
+    // Per-dataset narrative (what it is, why chosen, typical lesson). HTML allowed.
+    const DETAILS = {
+      'd1-earthquakes': {
+        blurb: 'A weekly GeoJSON FeatureCollection of ~1.5k–2.5k quakes — the canonical "dots on a map" feed.',
+        whyPick: 'The gentlest on-ramp that still hides real traps — <code>properties.time</code> is epoch <em>milliseconds</em> (not ISO, not seconds), coordinates are <code>[lon, lat, depth]</code>, and many fields are nullable.',
+        lesson: 'Typical lesson: timestamps & coordinate-order discipline',
+      },
+      'd2-openaq': {
+        blurb: 'Global air-quality monitoring locations with nested <code>sensors[]</code> metadata.',
+        whyPick: 'The only key-gated source, and it teaches the <em>two-call join</em> — locations first, measurements per <code>locationId</code> second — plus nullable coordinates and varying units.',
+        lesson: 'Typical lesson: API auth + multi-call joins',
+      },
+      'd3-streamflow': {
+        blurb: 'Hydrology gage readings in WaterML-style JSON, nested several levels deep.',
+        whyPick: 'The deep-nesting + <em>sentinel</em> case — <code>value = -999999</code> means "no data," parameter codes are opaque (<code>00060</code> = discharge), and site IDs are strings, not ints.',
+        lesson: 'Typical lesson: nested parsing & sentinel handling',
+      },
+      'd4-natural-earth': {
+        blurb: '~258 country boundaries (~14 MB) as Polygon/MultiPolygon — context, not events.',
+        whyPick: 'Breaks the "everything is a point" habit. Boundaries are a <em>join layer</em>; properties use hyphenated <code>ISO3166-1-Alpha-3</code> keys, and MultiPolygons (Antarctica) plus file size test rendering choices.',
+        lesson: 'Typical lesson: choropleth & attribute joins',
+      },
+    };
+
+    function escapeHtml(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[c]));
+    }
+
+    function shotSrc(demo) {
+      return SCREENSHOTS[demo.id] || null;
+    }
+
+    function renderCard(demo) {
+      const ready = demo.status === 'ready' && demo.catalogReady && demo.kgReady;
+      const planned = demo.status !== 'ready';
+      const img = shotSrc(demo);
+      const catalogHref = ready ? demo.catalogUrl : '#';
+      const kgHref = demo.kgReady ? `${DASHBOARD}/?ref=${encodeURIComponent(demo.id)}#graph` : '#';
+      const statusClass = planned ? 'planned' : (ready ? 'ready' : 'planned');
+      const statusText = planned
+        ? 'Reference build in progress'
+        : (ready ? 'Ready — live demo + KG snapshot' : 'Catalog or KG missing locally');
+      const d = DETAILS[demo.id] || {};
+
+      return `
+        <article class="card ${planned ? 'planned' : ''}">
+          <div class="shot-wrap">
+            ${img
+              ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(demo.title)} screenshot" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'shot-placeholder',textContent:'Screenshot missing — add private/reference/${escapeHtml(demo.id)}/dx-screen.png'}))">`
+              : `<div class="shot-placeholder">Screenshot pending</div>`}
+          </div>
+          <div class="card-body">
+            <span class="label">${escapeHtml(demo.label)}</span>
+            <h2>${escapeHtml(demo.title)}</h2>
+            <p class="subtitle">${escapeHtml(demo.subtitle || '')}</p>
+            ${d.blurb ? `<p class="blurb">${d.blurb}</p>` : ''}
+            ${d.whyPick ? `<p class="why-pick"><strong>Why we chose it:</strong> ${d.whyPick}</p>` : ''}
+            ${d.lesson ? `<span class="lesson">${escapeHtml(d.lesson)}</span>` : ''}
+            <div class="status ${statusClass}">${escapeHtml(statusText)}</div>
+            <div class="actions">
+              <a class="btn primary ${ready ? '' : 'disabled'}" href="${catalogHref}" target="_blank" rel="noopener">Live demo</a>
+              <a class="btn secondary ${demo.kgReady ? '' : 'disabled'}" href="${kgHref}" target="_blank" rel="noopener">View KG</a>
+            </div>
+          </div>
+        </article>`;
+    }
+
+    async function loadDemos() {
+      const grid = document.getElementById('demo-grid');
+      try {
+        const r = await fetch(`${DASHBOARD}/api/reference-demos`);
+        if (!r.ok) throw new Error('API ' + r.status);
+        const data = await r.json();
+        const demos = data.demos || [];
+        if (!demos.length) throw new Error('empty');
+        grid.innerHTML = demos.map(renderCard).join('');
+      } catch (err) {
+        grid.innerHTML = `
+          <p style="color:#f07178;grid-column:1/-1">
+            Could not load demo list from dashboard (${escapeHtml(err.message)}).
+            Start <code>uvicorn server.dashboard.app:app --port 8000</code> and refresh.
+          </p>`;
+      }
+    }
+
+    loadDemos();
+  </script>
+</body>
+</html>

@@ -101,6 +101,20 @@
       <div class="quote">A <strong>validators-green</strong> catalog in <strong>your fork</strong>, domain KG nodes <strong>you</strong> proposed and accepted, and an <strong>open PR</strong>.</div>
     </section>
 
+    <section class="slide" data-note="The goal arc — spell out plainly what each attendee does today.">
+      <h2>What you'll do today</h2>
+      <div class="flow">
+        <span><strong>1.</strong> Pick a dataset</span><span class="arrow">→</span>
+        <span><strong>2.</strong> Explore data &amp; foot-guns with the agent</span><span class="arrow">→</span>
+        <span><strong>3.</strong> Externalize what you learn into the KG</span><span class="arrow">→</span>
+        <span><strong>4.</strong> Build a FAIR web catalog from it</span>
+      </div>
+      <p style="margin-top:1.5rem">One source (D1–D4). Interactively surface its quirks with Cline, turn each quirk into a
+        <strong>proposed → accepted</strong> knowledge node, then let those nodes drive a catalog that passes the validators.</p>
+      <div class="quote" style="margin-top:1.25rem;font-size:1.1rem">The model is non-deterministic — two people, two runs, different code. The
+        <strong>knowledge layer + validators</strong> are what converge everyone to the <strong>same kind of outcome</strong>.</div>
+    </section>
+
     <section class="slide" data-note="Do NOT frame as AgentLoom vs hand prompt duel.">
       <h2>The promise — and where it breaks</h2>
       <p>"Describe the app → get working code."</p>
@@ -245,15 +259,17 @@ python3 -m venv .venv
       <p class="muted">Muscle memory for Track B</p>
     </section>
 
-    <section class="slide">
+    <section class="slide" data-note="One prompt pack PER dataset — point attendees to the pack matching their pick.">
       <h2>Block 3 — your catalog (90 min)</h2>
-      <p><code>docs/workshop/04-attendee-prompt-pack.md</code> — <strong>Track B</strong> ·
-        <a href="https://github.com/Keven1894/ucgis-agentloom-2026-workshop/blob/main/docs/workshop/04-attendee-prompt-pack.md">online</a></p>
-      <ul>
-        <li>Cline <strong>chooses</strong> slugs from discovery</li>
-        <li>One <strong>new Cline task</strong> per phase</li>
-        <li>2–3 domain proposals → accept → catalog → validators green</li>
-      </ul>
+      <p><strong>Track B</strong> — use the prompt pack for <strong>your</strong> dataset (same flow, dataset-specific prompts):</p>
+      <table>
+        <tr><th>Dataset</th><th>Prompt pack</th></tr>
+        <tr><td><strong>D1</strong> Earthquakes</td><td><code>04-attendee-prompt-pack-D1.md</code></td></tr>
+        <tr><td><strong>D2</strong> OpenAQ</td><td><code>04-attendee-prompt-pack-D2.md</code></td></tr>
+        <tr><td><strong>D3</strong> Streamflow <span class="muted">(default)</span></td><td><code>04-attendee-prompt-pack.md</code></td></tr>
+        <tr><td><strong>D4</strong> Natural Earth</td><td><code>04-attendee-prompt-pack-D4.md</code></td></tr>
+      </table>
+      <p class="muted" style="margin-top:0.75rem">Cline chooses slugs from discovery · one new Cline task per phase · 2–3 domain proposals → accept → catalog → validators green</p>
     </section>
 
     <section class="slide" data-note="D3 only — 5c is KG-driven polish after validators pass.">

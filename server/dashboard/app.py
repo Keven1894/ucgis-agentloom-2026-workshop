@@ -24,13 +24,16 @@ import re
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 WORKSPACE = Path(__file__).resolve().parents[2]
 KG_DIR = WORKSPACE / "agents" / "knowledge-graphs"
 PROPOSALS_DIR = KG_DIR / "proposals"
+REFERENCE_DIR = WORKSPACE / "private" / "reference"
+REFERENCE_MANIFEST = REFERENCE_DIR / "manifest.json"
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 KG_FILES = {
@@ -45,6 +48,34 @@ KG_FILES = {
 MASTER_FILE = KG_DIR / "master-graph.json"
 
 app = FastAPI(title="AgentLoom KG Dashboard", version="0.1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["GET"],
+    allow_headers=["*"],
+)
+
+
+def _load_reference_manifest() -> dict:
+    if not REFERENCE_MANIFEST.exists():
+        return {"demos": []}
+    try:
+        return json.loads(REFERENCE_MANIFEST.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {"demos": []}
+
+
+def _reference_demo(ref_id: str) -> dict | None:
+    for demo in _load_reference_manifest().get("demos", []):
+        if demo.get("id") == ref_id:
+            return demo
+    return None
+
+
+def _reference_domain_kg_path(ref_id: str) -> Path | None:
+    path = REFERENCE_DIR / ref_id / "domain-knowledge-graph.json"
+    return path if path.is_file() else None
 
 
 @app.get("/api/health")
@@ -153,20 +184,61 @@ def _master_edges(master: dict, all_ids: set[str]) -> list[dict]:
     return out
 
 
+@app.get("/api/reference-demos")
+def reference_demos() -> dict:
+    """List local reference builds (private/reference/) for the showcase hub."""
+    manifest = _load_reference_manifest()
+    demos_out: list[dict] = []
+    for demo in manifest.get("demos", []):
+        ref_id = demo.get("id", "")
+        kg_path = _reference_domain_kg_path(ref_id)
+        starter = demo.get("starterDir", "")
+        starter_ready = (WORKSPACE / "starter" / starter / "index.html").is_file()
+        demos_out.append({
+            **demo,
+            "kgReady": kg_path is not None,
+            "catalogReady": starter_ready,
+            "kgUrl": f"/?ref={ref_id}#graph",
+            "catalogUrl": f"{manifest.get('catalogBaseUrl', 'http://127.0.0.1:8766')}/starter/{starter}/",
+        })
+    return {
+        "catalogBaseUrl": manifest.get("catalogBaseUrl", "http://127.0.0.1:8766"),
+        "dashboardBaseUrl": manifest.get("dashboardBaseUrl", "http://127.0.0.1:8000"),
+        "showcaseUrl": manifest.get("showcaseUrl"),
+        "demos": demos_out,
+    }
+
+
 @app.get("/api/kg-data")
-def kg_data() -> dict:
+def kg_data(ref: str | None = Query(default=None)) -> dict:
     """Cytoscape-format elements: {nodes: [...], edges: [...]}.
 
     Includes a synthetic master-root node + edges to each role's KG roots,
     derived from agents/knowledge-graphs/master-graph.json. This makes the
     visualization a single weakly-connected component instead of 6 islands.
+
+    Optional ?ref=d1-earthquakes overlays the domain-knowledge graph from
+    private/reference/<ref>/domain-knowledge-graph.json without mutating the
+    committed workshop KG on disk.
     """
+    ref_demo = _reference_demo(ref) if ref else None
+    ref_domain_path = _reference_domain_kg_path(ref) if ref else None
+    if ref and ref_demo is None:
+        raise HTTPException(status_code=404, detail=f"Unknown reference demo: {ref}")
+    if ref and ref_domain_path is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Reference KG not found for {ref} (expected {REFERENCE_DIR / ref / 'domain-knowledge-graph.json'})",
+        )
+
     nodes: list[dict] = []
     edges: list[dict] = []
     all_ids: set[str] = set()
     raw_nodes: list[tuple[dict, str]] = []
 
     for source, (path, key) in KG_FILES.items():
+        if ref_domain_path and source == "domain-knowledge":
+            path = ref_domain_path
         if not path.exists():
             continue
         kg = json.loads(path.read_text(encoding="utf-8"))
@@ -194,7 +266,16 @@ def kg_data() -> dict:
         if key not in seen_edge:
             seen_edge.add(key)
             deduped.append(e)
-    return {"nodes": nodes, "edges": deduped}
+    payload: dict[str, Any] = {"nodes": nodes, "edges": deduped}
+    if ref_demo:
+        payload["reference"] = {
+            "id": ref_demo.get("id"),
+            "label": ref_demo.get("label"),
+            "title": ref_demo.get("title"),
+            "subtitle": ref_demo.get("subtitle"),
+            "domainKgPath": str(ref_domain_path.relative_to(WORKSPACE)) if ref_domain_path else "",
+        }
+    return payload
 
 
 @app.get("/api/kg-stats")
