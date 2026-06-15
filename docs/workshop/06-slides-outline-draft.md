@@ -142,9 +142,16 @@ One JSON for all projects — **paths must match your fork**.
 
 ### Slide 22 — Block 0 commands (process only — no secrets on slide)
 ```bash
+# Windows
 python -m venv .venv
 .venv/Scripts/pip install -r requirements.txt
 .venv/Scripts/python scripts/test_mcp_kg_tools.py
+
+# macOS/Linux
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python scripts/test_mcp_kg_tools.py
+
 # Cline → OpenAI Compatible → Base URL + API Key: see today's A5 slip
 ```
 Base URL and per-attendee key are **distributed day-of** (A5 slip / on-screen), never committed.

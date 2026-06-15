@@ -126,7 +126,14 @@ Organizer recommendation: **avoid the source you know best** — the workshop te
 Vendored snapshots work without live API (except D2 live refresh):
 
 ```bash
+# Windows
 .venv\Scripts\python scripts\sanity_check_sources.py --vendored
+
+# macOS/Linux
+.venv/bin/python scripts/sanity_check_sources.py --vendored
+
+# or, on any platform with make:
+make check-offline
 ```
 
 **Pass**: 4/4 sources OK against committed snapshots.

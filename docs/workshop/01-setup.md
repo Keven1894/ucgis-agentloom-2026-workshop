@@ -132,9 +132,12 @@ Details: [`cline-wrapper.md`](./cline-wrapper.md)
 ### 5a — Paste config (human once)
 
 1. Cline → **MCP Servers** → Configure → **Configure MCP Servers**
-2. Open [`cline-mcp-settings.example.json`](./cline-mcp-settings.example.json)
+2. Open the template for your OS:
+   - Windows → [`cline-mcp-settings.example.json`](./cline-mcp-settings.example.json)
+   - macOS/Linux → [`cline-mcp-settings.macos-linux.example.json`](./cline-mcp-settings.macos-linux.example.json)
 3. Replace every `REPO_ROOT` with your **absolute** fork path  
-   Example Windows: `C:/projects/02_research-agents/2026-ucgis/ucgis-agentloom-2026-workshop`
+   Example Windows: `C:/projects/02_research-agents/2026-ucgis/ucgis-agentloom-2026-workshop`  
+   Example macOS: `/Users/<you>/projs/01_agentloom/ucgis-agentloom-2026-workshop`
 4. Ensure `command` is **`REPO_ROOT/.venv/Scripts/python.exe`** (Windows) or **`REPO_ROOT/.venv/bin/python`** (macOS/Linux)
 5. Save → Done → **Developer: Reload Window**
 

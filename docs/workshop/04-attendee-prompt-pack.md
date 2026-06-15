@@ -210,7 +210,8 @@ Wire catalog to prefer dist/ when present. run_all.py PASS.
 Human:
 
 ```bash
-.venv/Scripts/python scripts/validators/run_all.py
+.venv/Scripts/python scripts/validators/run_all.py   # Windows
+.venv/bin/python scripts/validators/run_all.py        # macOS/Linux
 git add starter/ docs/domain/ agents/knowledge-graphs/ dist/
 git commit -m "UCGIS workshop: D3 streamflow catalog"
 git push -u origin workshop-<handle>

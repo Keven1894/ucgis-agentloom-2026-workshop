@@ -85,12 +85,15 @@
 
     <h2>Before you start</h2>
     <pre># Phase A — bootstrap (human, once per clone)
-python -m venv .venv
+python -m venv .venv          # macOS/Linux: python3 -m venv .venv
 .venv/Scripts/pip install -r requirements.txt          # Windows
-.venv/Scripts/python scripts/test_mcp_kg_tools.py    # expect PASS
+.venv/bin/pip install -r requirements.txt              # macOS/Linux
+.venv/Scripts/python scripts/test_mcp_kg_tools.py    # Windows  (expect PASS)
+.venv/bin/python scripts/test_mcp_kg_tools.py        # macOS/Linux
 
 # Phase D — dashboard (terminal 1)
-.venv/Scripts/python -m uvicorn server.dashboard.app:app --port 8000 --host 127.0.0.1
+.venv/Scripts/python -m uvicorn server.dashboard.app:app --port 8000 --host 127.0.0.1   # Windows
+.venv/bin/python -m uvicorn server.dashboard.app:app --port 8000 --host 127.0.0.1       # macOS/Linux
 
 # Phase C — MCP: paste cline-mcp-settings.example.json (uses .venv python)</pre>
 

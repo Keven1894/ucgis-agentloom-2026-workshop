@@ -39,7 +39,8 @@ python -m venv .venv
 # macOS / Linux
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-.venv/bin/python scripts/test_mcp_kg_tools.py
+.venv/bin/python scripts/test_mcp_kg_tools.py    # expect PASS
+.venv/bin/python scripts/kg/propose_node.py --help
 ```
 
 Set VS Code interpreter → **Python: Select Interpreter** → `.venv/Scripts/python.exe` (Windows) or `.venv/bin/python`.
@@ -63,7 +64,7 @@ Details: [`cline-wrapper.md`](./cline-wrapper.md) · [`09-cline-setup.md`](../..
 ## Phase C — MCP server (human, ~5 min)
 
 1. Cline panel → **MCP Servers** → Configure → **Configure MCP Servers**
-2. Paste config from [`cline-mcp-settings.example.json`](./cline-mcp-settings.example.json)
+2. Paste config from [`cline-mcp-settings.example.json`](./cline-mcp-settings.example.json) (Windows) or [`cline-mcp-settings.macos-linux.example.json`](./cline-mcp-settings.macos-linux.example.json) (macOS/Linux)
 3. Replace `REPO_ROOT` with your **absolute fork path** (must match the clone you have open)
 4. Save → Done → **Developer: Reload Window**
 5. Confirm **agentloom-kg** connected (green). Tool names may not appear ([cline#1272](https://github.com/cline/cline/issues/1272)) — use Phase E functional test.
@@ -83,7 +84,12 @@ Terminal 1 (keep running during workshop):
 ```bash
 # Windows — dedicated terminal tab; omit --reload on Windows if the process exits immediately
 .venv/Scripts/python -m uvicorn server.dashboard.app:app --port 8000 --host 127.0.0.1
-# or: make dashboard   (if make available)
+
+# macOS / Linux
+.venv/bin/python -m uvicorn server.dashboard.app:app --port 8000 --host 127.0.0.1
+
+# or, on any platform with make:
+make dashboard
 ```
 
 Browser: `http://127.0.0.1:8000` → **Proposals** tab for human review.

@@ -37,13 +37,20 @@ Full checklist: [`00-workshop-workflow.md`](./00-workshop-workflow.md).
 ### 0 — Create `.venv` (required)
 
 ```bash
+# Windows
 cd C:/projects/ucgis-agentloom-2026
 python -m venv .venv
 .venv/Scripts/pip install -r requirements.txt
 .venv/Scripts/python scripts/test_mcp_kg_tools.py
+
+# macOS/Linux
+cd ~/path/to/ucgis-agentloom-2026-workshop
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python scripts/test_mcp_kg_tools.py
 ```
 
-VS Code → **Python: Select Interpreter** → `.venv/Scripts/python.exe`.
+VS Code → **Python: Select Interpreter** → `.venv/Scripts/python.exe` (Windows) or `.venv/bin/python` (macOS/Linux).
 
 Optional: `.vscode/settings.json.example` → `.vscode/settings.json`.
 
@@ -100,7 +107,7 @@ According to .clinerules/, what is your role and which node types may you propos
 
 See [`cline-mcp-tools.md`](./cline-mcp-tools.md). Cline does **not** self-configure MCP.
 
-Use `.venv/Scripts/python.exe` as `command` in `cline_mcp_settings.json`. Reload window; confirm 3 tools on `agentloom-kg`.
+Use `.venv/Scripts/python.exe` (Windows) or `.venv/bin/python` (macOS/Linux) as `command` in `cline_mcp_settings.json`. Reload window; confirm 3 tools on `agentloom-kg`.
 
 ### 6 — Allow shell commands (one-time)
 
@@ -109,8 +116,13 @@ When Cline first runs `python scripts/kg/propose_node.py …`, approve the promp
 ### 7 — Confirm CLI + dashboard
 
 ```bash
+# Windows
 .venv/Scripts/python scripts/kg/propose_node.py --help
 .venv/Scripts/python -m uvicorn server.dashboard.app:app --port 8000 --host 127.0.0.1
+
+# macOS/Linux
+.venv/bin/python scripts/kg/propose_node.py --help
+.venv/bin/python -m uvicorn server.dashboard.app:app --port 8000 --host 127.0.0.1
 ```
 
 Dashboard → `http://127.0.0.1:8000` · open [`welcome.html`](./welcome.html)

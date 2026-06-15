@@ -25,7 +25,8 @@ One full loop:
 # Windows
 .venv\Scripts\python -c "import json; d=json.load(open('data/workshop/quickstart-places.geojson')); print(len(d['features']), 'features'); print(d['features'][0]['properties'])"
 
-# macOS/Linux — use .venv/bin/python
+# macOS/Linux
+.venv/bin/python -c "import json; d=json.load(open('data/workshop/quickstart-places.geojson')); print(len(d['features']), 'features'); print(d['features'][0]['properties'])"
 ```
 
 You should see **3 point features** with `observed_at` as **ISO 8601 strings with timezone** (unlike D1's epoch milliseconds).
@@ -96,8 +97,12 @@ Replace `<proposal-file>` with the actual filename:
 # Windows
 .venv\Scripts\python scripts\kg\accept_proposal.py --proposal <proposal-file>.json
 
+# macOS/Linux
+.venv/bin/python scripts/kg/accept_proposal.py --proposal <proposal-file>.json
+
 # Dry-run first (optional)
-.venv\Scripts\python scripts\kg\accept_proposal.py --proposal <proposal-file>.json --dry-run
+.venv\Scripts\python scripts\kg\accept_proposal.py --proposal <proposal-file>.json --dry-run   # Windows
+.venv/bin/python scripts/kg/accept_proposal.py --proposal <proposal-file>.json --dry-run        # macOS/Linux
 ```
 
 **Pass**: validators run during accept; proposal JSON removed; node appears in domain knowledge graph.
@@ -126,8 +131,13 @@ Keep it under 30 lines. Do not edit *-graph.json by hand.
 ## Step 6 — Verify governance floor
 
 ```bash
+# Windows
 .venv\Scripts\python scripts\kg\validate_all.py
 .venv\Scripts\python scripts\validators\run_all.py
+
+# macOS/Linux
+.venv/bin/python scripts/kg/validate_all.py
+.venv/bin/python scripts/validators/run_all.py
 ```
 
 **Pass**: same 8/8 PASS as setup. You do **not** need a catalog app for this quickstart.

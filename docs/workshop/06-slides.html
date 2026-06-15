@@ -222,10 +222,18 @@
 
     <section class="slide">
       <h2>Block 0 — verify</h2>
-      <pre><code>python -m venv .venv
+      <pre><code># Windows
+python -m venv .venv
 .venv\Scripts\pip install -r requirements.txt
 .venv\Scripts\python scripts\verify_workshop_machine.py
 .venv\Scripts\python scripts\test_mcp_kg_tools.py
+
+# macOS/Linux
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python scripts/verify_workshop_machine.py
+.venv/bin/python scripts/test_mcp_kg_tools.py
+
 # Cline → OpenAI · gpt-5.2 · temp 0.2 · key in settings</code></pre>
     </section>
 

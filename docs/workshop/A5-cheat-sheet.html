@@ -54,22 +54,33 @@
   <h2>1. Setup (once)</h2>
   <pre>git clone https://github.com/YOU/ucgis-agentloom-2026-workshop
 cd ucgis-agentloom-2026-workshop && git checkout -b workshop-YOU
+
+# Windows
 python -m venv .venv
 .venv\Scripts\pip install -r requirements.txt
 .venv\Scripts\python scripts\verify_workshop_machine.py
-.venv\Scripts\python scripts\test_mcp_kg_tools.py</pre>
+.venv\Scripts\python scripts\test_mcp_kg_tools.py
+
+# macOS/Linux
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python scripts/verify_workshop_machine.py
+.venv/bin/python scripts/test_mcp_kg_tools.py</pre>
   <p>Cline: OpenAI · <strong>gpt-5.2</strong> · temp <strong>0.2</strong> · paste API key in settings</p>
 
   <h2>2. Dashboard (keep running)</h2>
-  <pre>.venv\Scripts\python -m uvicorn server.dashboard.app:app --port 8000 --host 127.0.0.1</pre>
+  <pre>.venv\Scripts\python -m uvicorn server.dashboard.app:app --port 8000 --host 127.0.0.1   # Windows
+.venv/bin/python -m uvicorn server.dashboard.app:app --port 8000 --host 127.0.0.1       # macOS/Linux</pre>
   <p>Open <code>http://127.0.0.1:8000</code> → Proposals tab. Windows: omit <code>--reload</code>.</p>
 
   <h2>3. Accept a proposal (human only)</h2>
-  <pre>.venv\Scripts\python scripts\kg\accept_proposal.py --proposal FILENAME.json</pre>
+  <pre>.venv\Scripts\python scripts\kg\accept_proposal.py --proposal FILENAME.json   # Windows
+.venv/bin/python scripts/kg/accept_proposal.py --proposal FILENAME.json        # macOS/Linux</pre>
   <p>Cline never runs accept. Review on dashboard first.</p>
 
   <h2>4. Validators (must PASS before commit)</h2>
-  <pre>.venv\Scripts\python scripts\validators\run_all.py</pre>
+  <pre>.venv\Scripts\python scripts\validators\run_all.py   # Windows
+.venv/bin/python scripts/validators/run_all.py        # macOS/Linux</pre>
 
   <h2>5. Every Cline task — append</h2>
   <pre>Do NOT read agents/knowledge-graphs/*-graph.json directly.
