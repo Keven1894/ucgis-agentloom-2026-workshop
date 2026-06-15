@@ -31,6 +31,11 @@
     .slide ul { margin: 0.75rem 0 0 1.5rem; }
     .slide li { margin: 0.4rem 0; }
     .muted { color: var(--muted); font-size: 1rem !important; }
+    .dim-tag {
+      background: rgba(94, 201, 146, 0.18); color: #7fe0ab;
+      padding: 0 0.35rem; border-radius: 4px; font-size: 0.9em; font-weight: 600;
+      white-space: nowrap;
+    }
     .quote {
       border-left: 4px solid var(--accent); padding: 1rem 1.25rem; margin: 1rem 0;
       background: var(--card); border-radius: 0 8px 8px 0; font-size: 1.35rem;
@@ -100,6 +105,9 @@
     <section class="slide">
       <h2>What you leave with</h2>
       <div class="quote">A <strong>validators-green</strong> catalog in <strong>your fork</strong>, domain KG nodes <strong>you</strong> proposed and accepted, and an <strong>open PR</strong>.</div>
+      <p style="margin-top:1.25rem">See it concretely first — four reference catalogs we built (D1–D4):
+        <a href="http://127.0.0.1:8766/docs/workshop/showcase.html">showcase</a></p>
+      <p class="muted" style="margin-top:0.5rem">This is the thing you'll ship — not a slide about it. Your fork starts with the <strong>framework</strong>, not a finished catalog; you build it today.</p>
     </section>
 
     <section class="slide" data-note="The goal arc — spell out plainly what each attendee does today.">
@@ -120,14 +128,15 @@
       <h2>The promise — and where it breaks</h2>
       <p>"Describe the app → get working code."</p>
       <p style="margin-top:1rem">Cline + GPT-5.2 <strong>can</strong> ship a Leaflet catalog today.</p>
-      <p style="margin-top:1rem">The gap isn't one task — it's <strong>session 2</strong>, a <strong>teammate</strong>, a <strong>new source</strong>, an <strong>audit 3 months later</strong>.</p>
+      <p style="margin-top:1rem">The gap isn't one task — it's the <strong>same task run twice</strong> <span class="dim-tag">across runs</span>, <strong>session 2</strong> <span class="dim-tag">across sessions</span>, a <strong>teammate</strong> <span class="dim-tag">across people</span>, a <strong>new source</strong> <span class="dim-tag">across data sources</span>, an <strong>audit 3 months later</strong> <span class="dim-tag">across time</span>.</p>
+      <p class="muted" style="margin-top:0.75rem">The KG constrains the output too — taming run-to-run randomness. Persisting knowledge across runs, sessions, people, sources, and time is what the agentic-AI workflow is for.</p>
     </section>
 
     <section class="slide">
       <h2>The real question</h2>
       <div class="quote">Not "can the agent do it once?" (yes).<br><br>
-        "<strong>Where does the prompt come from</strong>, the 50th time, for the 10th person, with a <strong>traceable source</strong>?"</div>
-      <p class="muted" style="margin-top:1rem">A prompt is one-shot. When the session ends, the reasoning is gone.</p>
+        "<strong>Where does the prompt come from</strong> — and why does it land the <strong>same way</strong> — on the <strong>50th run</strong>, for the <strong>10th person</strong>, with a <strong>traceable source</strong>?"</div>
+      <p class="muted" style="margin-top:1rem">A prompt is one-shot: rerun it and the output drifts; when the session ends, the reasoning is gone. The <strong>KG + validators</strong> are what make the next run land in the <span class="dim-tag">same place</span>.</p>
     </section>
 
     <section class="slide">
@@ -174,43 +183,40 @@
     <section class="slide">
       <h2>Roles</h2>
       <table>
-        <tr><th>Who</th><th>Does</th></tr>
-        <tr><td><strong>You</strong></td><td>Accept proposals · dashboard · commit</td></tr>
-        <tr><td><strong>Cline</strong></td><td>MCP read · propose · implement catalog</td></tr>
-        <tr><td><strong>Validators</strong></td><td>Objective pass/fail (not taste)</td></tr>
+        <tr><th>Who</th><th>What</th><th>Does</th></tr>
+        <tr><td><strong>You</strong></td><td class="muted">human-in-the-loop</td><td>Accept proposals · dashboard · commit</td></tr>
+        <tr><td><strong>AI agent</strong></td><td class="muted">Cline + LLM (non-deterministic)</td><td>MCP read · propose · implement catalog</td></tr>
+        <tr><td><strong>Deterministic code</strong></td><td class="muted">validators (traditional, no LLM)</td><td>Objective pass/fail (not taste)</td></tr>
       </table>
+      <p class="muted" style="margin-top:1rem">The agent proposes; <strong>you</strong> decide; <strong>deterministic code</strong> — not taste — is the gate.</p>
     </section>
 
-    <section class="slide" data-note="Show the local reference build — attendees watch only.">
-      <h2>Finish line (lecturer demo)</h2>
-      <p>Your fork has the <strong>framework</strong> — <strong>no finished catalog</strong>.</p>
-      <p style="margin-top:1rem">Watch: 8 storytelling sections · Schema.org JSON-LD · live map</p>
-      <p class="muted">Lecturer demo only — organizer reference build running on this laptop, not in the attendee fork.</p>
-    </section>
-
-    <section class="slide" data-note="Live: Cline kg_search in chat.">
-      <h2>Evidence 1 — Persistence + indexing</h2>
+    <section class="slide" data-note="Live tour, not a proof — show the tool they'll use in Phase 1 discovery (kg_search in Cline chat).">
+      <h2>See it live — the memory you'll pull from</h2>
       <p>Live: MCP <code>kg_search</code> → <strong>only the relevant few</strong> nodes</p>
+      <p class="muted" style="margin-top:0.5rem">This is your <strong>Phase 2 — Discovery</strong>: the agent runs <code>kg_search</code> before it explores the data.</p>
       <div class="quote">This memory survived since May. It pulls what's relevant — not a 100-rule dump.</div>
     </section>
 
-    <section class="slide" data-note="Dashboard timeline tab.">
-      <h2>Evidence 2 — Provenance</h2>
+    <section class="slide" data-note="Live tour — the dashboard they'll accept proposals on in Phase 2.">
+      <h2>See it live — the dashboard you'll accept on</h2>
       <p>Dashboard <strong>Timeline</strong>: propose → accept UPDATE_LOG chain</p>
+      <p class="muted" style="margin-top:0.5rem">This is your <strong>Phase 3 — propose → accept</strong>: you review each proposal here before it lands.</p>
       <div class="quote">Every node has a source and a human who accepted it. A prompt has neither.</div>
     </section>
 
-    <section class="slide" data-note="Delete catalog section → FAIL → restore PASS.">
-      <h2>Evidence 3 — Learning + validators</h2>
+    <section class="slide" data-note="Live tour — the validator gate they'll hit before the PR.">
+      <h2>See it live — the gate you'll hit</h2>
       <ul>
         <li>Meta-pattern nodes correct repeat mistakes (framework learns)</li>
         <li>Live: remove one catalog section → <code>run_all.py</code> <span class="bad">FAIL</span> → restore → <span class="good">PASS</span></li>
       </ul>
+      <p class="muted" style="margin-top:0.5rem">This is your <strong>Phase 4–7 gate</strong>: <code>run_all.py</code> green is what makes the PR shippable.</p>
     </section>
 
     <section class="slide" data-note="Pause before hands-on.">
       <h2>Frame line</h2>
-      <div class="quote">Today is not about who writes a better prompt. It's about a memory layer that <strong>others — and future you — can extend</strong>, with traceable sources.<br><br>You're first in your fork.</div>
+      <div class="quote">A memory layer that <strong>others — and future you — can extend</strong>, with traceable sources.<br><br>Now it's your turn — you're first in your fork.</div>
     </section>
 
     <section class="slide">
@@ -225,9 +231,11 @@
         <a href="https://github.com/Keven1894/ucgis-agentloom-2026-workshop/blob/main/docs/workshop/03-data-source-menu.md">online</a></p>
     </section>
 
-    <section class="slide">
-      <h2>Locked stack</h2>
+    <section class="slide" data-note="AgentLoom is host-agnostic — this stack is just the free, reproducible choice for today.">
+      <h2>Locked stack <span class="muted" style="font-size:1rem">(for today)</span></h2>
       <p><code>.venv</code> · VS Code · Cline · MCP <code>agentloom-kg</code> · Dashboard <code>:8000</code></p>
+      <div class="quote" style="margin-top:1rem">AgentLoom is an <strong>independent framework</strong> — it talks to any agent over <strong>MCP</strong>. We pin this <strong>free</strong> stack so multiple attendees can follow the same steps today.</div>
+      <p class="muted" style="margin-top:0.75rem">In production with an AI budget, point the same MCP at <strong>Cursor</strong>, <strong>Antigravity</strong>, Claude Code, or any MCP host — the KG, dashboard, and validators don't change.</p>
       <ul style="margin-top:1rem">
         <li>MCP is <strong>read-only</strong> — never hand-edit <code>*-graph.json</code></li>
         <li>MCP green but empty tool list? <strong>Normal</strong> — test in Cline chat</li>
@@ -285,9 +293,9 @@ python3 -m venv .venv
     </section>
 
     <section class="slide">
-      <h2>Cline hygiene</h2>
+      <h2>Hands-on gotchas</h2>
       <ul>
-        <li>New task per phase — avoid 2h mega-task (W7: 136 min!)</li>
+        <li>New task per phase — long tasks drift &amp; stall</li>
         <li>Always append: "Do NOT read <code>*-graph.json</code>"</li>
         <li>D3: filter sentinel <code>-999999</code> (missing, not zero)</li>
         <li><code>fetch()</code> fails? <code>python -m http.server 8766</code></li>
@@ -309,7 +317,11 @@ python3 -m venv .venv
       <pre><code>git push -u origin workshop-YOURHANDLE
 # Open PR → upstream:
 # https://github.com/Keven1894/ucgis-agentloom-2026-workshop</code></pre>
-      <p class="muted" style="margin-top:1rem">Companion paper may cite PRs (with permission)</p>
+      <ul style="margin-top:1rem">
+        <li>Your <strong>finish line</strong> — a real, shareable artifact under your handle</li>
+        <li>Not a leaderboard — PRs are a <strong>showcase + corpus</strong>, not merged competitively</li>
+      </ul>
+      <p class="muted" style="margin-top:0.75rem">We may write a future paper based on this repo — your work might be acknowledged (with permission).</p>
     </section>
 
     <section class="slide">
